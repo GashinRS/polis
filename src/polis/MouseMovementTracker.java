@@ -23,20 +23,20 @@ public class MouseMovementTracker extends Pane {
         this.setPrefWidth(64 * 2 * 32);
         this.setPrefHeight(64 * 32);
         tile.setFill(Color.TRANSPARENT);
-        tile.setStroke(Color.BLACK);
+        tile.setStroke(Color.WHITE);
         tile.setStrokeWidth(5);
-        tile.setTranslateX(64 * (32 - 2 + 1));
-        tile.setTranslateY(64 * (2 + 1) / 2);
         tile.setVisible(false);
         this.getChildren().add(tile);
         EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                int x = (int) Math.round(e.getX());
-                int y = (int) Math.round(e.getY());
-                tile.setTranslateX(x);
-                tile.setTranslateY(y);
-                tile.setVisible(true);
+                int r = (int) Math.round((2*e.getY() - e.getX() + 750) / (2*64)) +10;
+                int k = (int) Math.round((e.getX() + 2*e.getY() - 750) / (2*64)) -10;
+                if (r>=0 && r<32 && k>=0 && k<32) {
+                    tile.setTranslateX(64 * (32 - r + k));
+                    tile.setTranslateY(64 * (r + k) / 2);
+                    tile.setVisible(true);
+                }
             }
         };
         this.addEventHandler(MouseEvent.MOUSE_MOVED, eventHandler);
