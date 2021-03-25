@@ -3,11 +3,8 @@ package polis;
 import buttons.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -16,35 +13,18 @@ import java.util.List;
 
 public class CityUI extends VBox {
 
-    private Button roadButton;
-    private Button selectionButton;
-    private Button bulldozerButton;
-    private Button commerceButton;
-    private Button industryButton;
-    private Button residenceButton;
-
     //https://www.tutorialspoint.com/how-to-add-an-image-to-a-button-action-in-javafx
     //afbeelding op buttons krijgen
-    public CityUI(){
+    public CityUI(MouseMovementTracker mouseMovementTracker){
         int buttonWidth = 75;
         int buttonHeight = 50;
-        try (InputStream roadIn = this.getClass().getResourceAsStream("/polis/buttons/road.png");
-             InputStream selectionIn = this.getClass().getResourceAsStream("/polis/buttons/selection.png");
-             InputStream bulldozerIn = this.getClass().getResourceAsStream("/polis/buttons/bulldozer.png");
-             InputStream commerceIn = this.getClass().getResourceAsStream("/polis/buttons/commerce.png");
-             InputStream industryIn = this.getClass().getResourceAsStream("/polis/buttons/industry.png");
-             InputStream residenceIn = this.getClass().getResourceAsStream("/polis/buttons/residence.png")){
-            roadButton = new RoadButton(new ImageView(new Image(roadIn)), buttonWidth, buttonHeight);
-            selectionButton = new SelectionButton(new ImageView(new Image(selectionIn)), buttonWidth, buttonHeight);
-            bulldozerButton = new BulldozerButton(new ImageView(new Image(bulldozerIn)), buttonWidth, buttonHeight);
-            commerceButton = new CommerceButton(new ImageView(new Image(commerceIn)), buttonWidth, buttonHeight);
-            industryButton = new IndustryButton(new ImageView(new Image(industryIn)), buttonWidth, buttonHeight);
-            residenceButton = new ResidenceButton(new ImageView(new Image(residenceIn)), buttonWidth, buttonHeight);
-        } catch (Exception ex){
-            System.err.println("bestand niet gevonden");
-        }
+        Button roadButton = new RoadButton("road.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button selectionButton = new SelectionButton("selection.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button bulldozerButton = new BulldozerButton("bulldozer.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button commerceButton = new CommerceButton("commerce.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button industryButton = new IndustryButton("industry.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button residenceButton = new ResidenceButton("residence.png", buttonWidth, buttonHeight, mouseMovementTracker);
         this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-
         this.getChildren().addAll(newRow(List.of(residenceButton, industryButton, commerceButton)),
                 newRow(List.of(roadButton, bulldozerButton)),
                 selectionButton);

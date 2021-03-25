@@ -1,10 +1,17 @@
 package buttons;
 
-import javafx.scene.image.ImageView;
+import javafx.event.ActionEvent;
+import polis.MouseMovementTracker;
 
 public class SelectionButton extends MyButton {
 
-    public SelectionButton(ImageView imageView, int width, int height) {
-        super(imageView, width, height);
+    public SelectionButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
+        super(filename, width, height, mouseMovementTracker);
+        this.setOnAction(this);
+    }
+
+    @Override
+    public void handle(ActionEvent ae){
+        mouseMovementTracker.setSelectionMode();
     }
 }
