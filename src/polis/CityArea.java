@@ -12,6 +12,8 @@ import javafx.scene.shape.Polygon;
 
 public class CityArea extends Pane {
 
+    private MouseMovementTracker mouseMovementTracker;
+
     private static final Polygon area = new Polygon(
                 0, 0,
                         64 * 32, 0.5 * 64 * 32,
@@ -19,7 +21,7 @@ public class CityArea extends Pane {
                         -64 * 32, 0.5 * 64 * 32
     );
 
-    public CityArea(MouseMovementTracker mouseMovementTracker){
+    public CityArea(){
         this.setPrefWidth(64 * 2 * 32);
         this.setPrefHeight(64 * 32);
         this.setFocusTraversable(true);
@@ -28,6 +30,20 @@ public class CityArea extends Pane {
         area.setTranslateX(64 * 32);
         area.setTranslateY(0);
 
-        this.getChildren().addAll(area, mouseMovementTracker);
+        this.getChildren().add(area);
+    }
+
+    public void setTranslateXY(Polygon polygon, int r, int k){
+        polygon.setTranslateX(64 * (32 - r + k));
+        polygon.setTranslateY(64 * (r + k) / 2);
+    }
+
+    public void setMouseMovementTracker(MouseMovementTracker mouseMovementTracker) {
+        this.mouseMovementTracker = mouseMovementTracker;
+        this.getChildren().add(mouseMovementTracker);
+    }
+
+    public MouseMovementTracker getMouseMovementTracker() {
+        return mouseMovementTracker;
     }
 }

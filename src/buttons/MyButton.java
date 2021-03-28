@@ -18,7 +18,7 @@ public abstract class MyButton extends Button implements EventHandler<ActionEven
     protected MouseMovementTracker mouseMovementTracker;
 
     public MyButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
-        try (InputStream in = this.getClass().getResourceAsStream("/polis/buttons/" + filename)){
+        try (InputStream in = this.getClass().getResourceAsStream("/polis/buttons/" + filename + ".png")){
             ImageView imageView = new ImageView(new Image(in));
             this.setGraphic(imageView);
         } catch (Exception ex) {
@@ -26,6 +26,8 @@ public abstract class MyButton extends Button implements EventHandler<ActionEven
         }
         this.setPrefSize(width, height);
         this.mouseMovementTracker = mouseMovementTracker;
+        this.setFocusTraversable(false);
+        this.setOnAction(this);
     }
 
 

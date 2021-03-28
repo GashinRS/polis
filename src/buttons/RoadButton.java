@@ -8,7 +8,6 @@ public class RoadButton extends MyButton {
 
     public RoadButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
         super(filename, width, height, mouseMovementTracker);
-        this.setOnAction(this);
     }
 
     @Override

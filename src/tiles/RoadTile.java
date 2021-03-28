@@ -1,27 +1,37 @@
-package polis;
+package tiles;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
+import javafx.util.Pair;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RoadTile extends Tile implements Observable, InvalidationListener {
+public class RoadTile extends SmallTile {
 
     private int r;
     private int k;
     private boolean duplicate;
     private int imageNumber;
-    private List<InvalidationListener> listenerList;
     //Deze map bevat de mogelijke coordinaten van de buren van een RoadTile, en wordt gebruikt om bij het checkNeighbors
     //om 4 ifs in te korten naar 1 enkele if
     private Map<Integer, Map <Integer, Integer>> states;
 
-    public RoadTile(int r, int k, List<RoadTile> roadTileList) {
+    private List<RoadTile> roadTileList;
+
+    //fix later?
+    Map<Pair<Integer, Integer>, Tile> tiles;
+
+    public RoadTile(int r, int k, List<RoadTile> roadTileList, Map<Pair<Integer, Integer>, Tile> tiles) {
+        //clean later
+        this.tiles = tiles;
+        this.roadTileList = roadTileList;
+
+
         int index = 0;
         while (!duplicate && index < roadTileList.size()){
             duplicate = (roadTileList.get(index).getR() == r && roadTileList.get(index).getK() == k);
@@ -35,8 +45,7 @@ public class RoadTile extends Tile implements Observable, InvalidationListener {
                     r+1, Map.of(k,4));
             this.r = r;
             this.k = k;
-            listenerList = new ArrayList<>();
-            imageNumber = checkNeighbor(roadTileList, true);
+            imageNumber = checkNeighbors(roadTileList, true);
             //Voegt het object zelf toe als listener bij zijn buren
             for (InvalidationListener listener : listenerList) {
                 RoadTile roadTile = (RoadTile) listener;
@@ -50,10 +59,10 @@ public class RoadTile extends Tile implements Observable, InvalidationListener {
      * Checkt welke buren deze RoadTile heeft. Deze methode wordt 1 keer gebruikt in de constructor en wordt ook
      * opgeroepen in invalidated om te kijken of het aantal buren is veranderd. Enkel wanneer deze methode voor het eerst
      * wordt opgeroepen in de constructor moeten de buren als listener toegevoegd worden van dit object, vandaar
-     * de boolean als parameter. In de for each loop wordt gekeken of de huidige tile een buur is, en zo ja, wordt aan de
-     * hand van de map states het juiste getal bepaald om toe te voegen aan de variabele number.
+     * de boolean als parameter. In de for each loop wordt gekeken of de huidige tile een buur is, en zo ja, wordt aan
+     * de hand van de map states het juiste getal bepaald om toe te voegen aan de variabele number.
      */
-    public int checkNeighbor(List<RoadTile> roadTileList, boolean firstTime){
+    public int checkNeighbors(List<RoadTile> roadTileList, boolean firstTime){
         int number = 0;
         for (RoadTile roadTile:roadTileList){
             if ((roadTile.getR() == r-1 && roadTile.getK() == k) || (roadTile.getR() == r && roadTile.getK() == k+1) ||
@@ -63,6 +72,11 @@ public class RoadTile extends Tile implements Observable, InvalidationListener {
                     addListener(roadTile);
                 }
             }
+//            try {
+//            number += states.get(roadTile.getR()).get(roadTile.getK());
+//            if (firstTime) {
+//                    addListener(roadTile);
+//            }} catch (NullPointerException e){ }
         }
         return number;
     }
@@ -93,21 +107,11 @@ public class RoadTile extends Tile implements Observable, InvalidationListener {
             RoadTile roadTile = (RoadTile) listener;
             neighbors.add(roadTile);
         }
-        int number = checkNeighbor(neighbors, false);
+        int number = checkNeighbors(neighbors, false);
         if (imageNumber != number){
             imageNumber = number;
             setImage(imageNumber);
         }
-    }
-
-    @Override
-    public void addListener(InvalidationListener invalidationListener) {
-        listenerList.add(invalidationListener);
-    }
-
-    @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-        listenerList.remove(invalidationListener);
     }
 
     public int getR() {
@@ -120,5 +124,18 @@ public class RoadTile extends Tile implements Observable, InvalidationListener {
 
     public boolean isDuplicate() {
         return duplicate;
+    }
+
+    @Override
+    public void removeThis(){
+        //for loop is code duplicatie
+        //clean later nog wa, mss betere manier dan te casten
+        roadTileList.remove(this);
+        tiles.values().remove(this);
+        for (InvalidationListener listener : listenerList) {
+            //RoadTile roadTile = (RoadTile) listener;
+            ((RoadTile) listener).removeListener(this);
+            listener.invalidated(this);
+        }
     }
 }

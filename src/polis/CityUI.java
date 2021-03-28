@@ -18,12 +18,12 @@ public class CityUI extends VBox {
     public CityUI(MouseMovementTracker mouseMovementTracker){
         int buttonWidth = 75;
         int buttonHeight = 50;
-        Button roadButton = new RoadButton("road.png", buttonWidth, buttonHeight, mouseMovementTracker);
-        Button selectionButton = new SelectionButton("selection.png", buttonWidth, buttonHeight, mouseMovementTracker);
-        Button bulldozerButton = new BulldozerButton("bulldozer.png", buttonWidth, buttonHeight, mouseMovementTracker);
-        Button commerceButton = new CommerceButton("commerce.png", buttonWidth, buttonHeight, mouseMovementTracker);
-        Button industryButton = new IndustryButton("industry.png", buttonWidth, buttonHeight, mouseMovementTracker);
-        Button residenceButton = new ResidenceButton("residence.png", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button roadButton = new RoadButton("road", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button selectionButton = new SelectionButton("selection", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button bulldozerButton = new BulldozerButton("bulldozer", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button commerceButton = new CommerceButton("commerce", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button industryButton = new IndustryButton("industry", buttonWidth, buttonHeight, mouseMovementTracker);
+        Button residenceButton = new ResidenceButton("residence", buttonWidth, buttonHeight, mouseMovementTracker);
         this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         this.getChildren().addAll(newRow(List.of(residenceButton, industryButton, commerceButton)),
                 newRow(List.of(roadButton, bulldozerButton)),

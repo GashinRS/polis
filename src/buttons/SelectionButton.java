@@ -7,7 +7,6 @@ public class SelectionButton extends MyButton {
 
     public SelectionButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
         super(filename, width, height, mouseMovementTracker);
-        this.setOnAction(this);
     }
 
     @Override

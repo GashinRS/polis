@@ -17,7 +17,10 @@ public class CityContainer extends StackPane {
         this.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setPrefSize(1500,1000);
 
-        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker();
+        CityArea cityArea = new CityArea();
+        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker(cityArea);
+        cityArea.setMouseMovementTracker(mouseMovementTracker);
+
         CityUI cityUI = new CityUI(mouseMovementTracker);
         PlayButton playButton = new PlayButton("play.png", "pause.png", 75, 50);
         Insets insets = new Insets(5.0, 5.0, 5.0, 5.0);
@@ -26,6 +29,6 @@ public class CityContainer extends StackPane {
         setMargin(playButton, insets);
         setAlignment(playButton, Pos.BOTTOM_LEFT);
 
-        this.getChildren().addAll(new Viewport(new CityArea(mouseMovementTracker), 0.5), cityUI, playButton);
+        this.getChildren().addAll(new Viewport(cityArea, 0.5), cityUI, playButton);
     }
 }
