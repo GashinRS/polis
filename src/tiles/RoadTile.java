@@ -13,18 +13,18 @@ import java.util.Map;
 
 public class RoadTile extends SmallTile {
 
-    private int r;
-    private int k;
-    private boolean duplicate;
-    private int imageNumber;
+    protected int r;
+    protected int k;
+    protected boolean duplicate;
+    protected int imageNumber;
     //Deze map bevat de mogelijke coordinaten van de buren van een RoadTile, en wordt gebruikt om bij het checkNeighbors
     //om 4 ifs in te korten naar 1 enkele if
-    private Map<Integer, Map <Integer, Integer>> states;
+    protected Map<Integer, Map <Integer, Integer>> states;
 
-    private List<RoadTile> roadTileList;
+    protected List<RoadTile> roadTileList;
 
     //fix later?
-    Map<Pair<Integer, Integer>, Tile> tiles;
+    protected Map<Pair<Integer, Integer>, Tile> tiles;
 
     public RoadTile(int r, int k, List<RoadTile> roadTileList, Map<Pair<Integer, Integer>, Tile> tiles) {
         //clean later

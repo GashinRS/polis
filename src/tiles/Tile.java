@@ -25,7 +25,7 @@ public abstract class Tile extends Polygon implements InvalidationListener, Obse
         return cellSize;
     }
 
-    public abstract void checkValidity(int r, int k);
+    public void checkValidity(int r, int k){}
 
     @Override
     public void invalidated(Observable observable) {
@@ -41,5 +41,6 @@ public abstract class Tile extends Polygon implements InvalidationListener, Obse
         listenerList.remove(invalidationListener);
     }
 
-    public void removeThis(){};
+    public void removeThis(){}
+
 }

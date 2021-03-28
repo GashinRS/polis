@@ -24,4 +24,8 @@ public class RoadSelectionTile extends SmallTile{
         }
         setFill(color);
     }
+
+    public Color getColor(){
+        return color;
+    }
 }

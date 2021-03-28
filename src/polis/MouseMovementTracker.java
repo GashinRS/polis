@@ -1,6 +1,8 @@
 package polis;
 
 import eventHandlers.BigPictureTileHandler;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
@@ -46,9 +48,16 @@ public class MouseMovementTracker extends Pane {
     private int kDrag;
     private final CityArea cityArea;
 
-    EventHandler<MouseEvent> roadHandler;
+    EventHandler<MouseEvent> roadHandler = mouseEvent -> placeRoad(getR(mouseEvent), getK(mouseEvent));
 
-    EventHandler<MouseEvent> cursorHandler;
+    EventHandler<MouseEvent> cursorHandler = e -> {
+        int r = getR(e);
+        int k = getK(e);
+        if (r>=0 && r<=32-cursorTile.getCellSize() && k>=0 && k<=32-cursorTile.getCellSize()) {
+            setTranslateXY(cursorTile, r, k);
+            cursorTile.checkValidity(r, k);
+        }
+    };
 
 //https://www.tutorialspoint.com/javafx/javafx_event_handling.htm
 //mouse events
@@ -58,44 +67,25 @@ public class MouseMovementTracker extends Pane {
         eventHandlers = new ArrayList<>();
         roadSelectionDragTiles = new ArrayList<>();
 
-        //al deze zooi id constructor gezet omdat tiles anders null is, vermoedelijk omdat het nog niet
-        //geinitialiseerd was. later terug in veld veranderen en daar initialiseren en stuff verspreiden
-        //over verschillende klassen wss
-
-        roadHandler = new EventHandler<>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                int r = getR(mouseEvent);
-                int k = getK(mouseEvent);
-                RoadTile roadTile = new RoadTile(r, k, roadTileList, tiles);
-                if (!roadTile.isDuplicate() && r>=0 && r<32 && k>=0 && k<32) {
-                    roadTileList.add(roadTile);
-
-                    //fix later
-                    tiles.put(new Pair<>(r, k), roadTile);
-
-                    getChildren().add(roadTile);
-                    setTranslateXY(roadTile, r, k);
-                }
-            }
-        };
-
-        cursorHandler = e -> {
-            int r = getR(e);
-            int k = getK(e);
-            if (r>=0 && r<=32-cursorTile.getCellSize() && k>=0 && k<=32-cursorTile.getCellSize()) {
-                setTranslateXY(cursorTile, r, k);
-                cursorTile.checkValidity(r, k);
-            }
-        };
-
-
         setPrefWidth(64 * 2 * 32);
         setPrefHeight(64 * 32);
         setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         setSelectionMode();
         getChildren().addAll(selectionTile, roadSelectionTile, bigSelectionTile);
         addEventHandler(MouseEvent.MOUSE_MOVED, cursorHandler);
+    }
+
+    public void placeRoad(int r, int k){
+        RoadTile roadTile = new RoadTile(r, k, roadTileList, tiles);
+        if (!roadTile.isDuplicate() && r>=0 && r<32 && k>=0 && k<32) {
+            roadTileList.add(roadTile);
+
+            //fix later
+            tiles.put(new Pair<>(r, k), roadTile);
+
+            getChildren().add(roadTile);
+            setTranslateXY(roadTile, r, k);
+        }
     }
 
     public void setTranslateXY(Polygon polygon, int r, int k){
@@ -117,8 +107,10 @@ public class MouseMovementTracker extends Pane {
 
     EventHandler<MouseEvent> bulldozerHandler = mouseEvent -> {
         Tile tile = tiles.get(new Pair<>(getR(mouseEvent), getK(mouseEvent)));
-        getChildren().remove(tile);
-        tile.removeThis();
+        if (tile != null) {
+            getChildren().remove(tile);
+            tile.removeThis();
+        }
     };
 
     public void setSelectionMode(){
@@ -127,20 +119,20 @@ public class MouseMovementTracker extends Pane {
     }
 
     public void setRoadMode(){
-//        switchMode(roadSelectionTile, roadHandler);
-//        addEventHandler(MouseEvent.MOUSE_CLICKED, roadHandler);
+        switchMode(roadSelectionTile, roadHandler);
+        addEventHandler(MouseEvent.MOUSE_CLICKED, roadHandler);
 
         //L shape
-        addEventHandler(MouseEvent.DRAG_DETECTED, e -> startFullDrag());
-        setOnMouseDragEntered(coordinateHandler);
-        addEventHandler(MouseEvent.MOUSE_DRAGGED, roadSelectionHandler);
-        setOnMouseDragReleased(roadSelectionDragTileRemover);
-
-//
-//        //tijdelijk
-//        tile.setStroke(Color.TRANSPARENT);
-//        removeEventHandler(MouseEvent.MOUSE_CLICKED, cursorHandler);
+        addEventHandler(MouseEvent.MOUSE_PRESSED, pressHandler);
+        addEventHandler(MouseEvent.DRAG_DETECTED, coordinateHandler);
     }
+
+    //om het startcoordinaat van de drag te krijgen
+    EventHandler<MouseEvent> pressHandler = e -> {
+            rDrag = Math.max(Math.min(getR(e), 31), 0);
+            kDrag = Math.max(Math.min(getK(e), 31), 0);
+
+    };
 
     public void switchMode(Tile tile, EventHandler<MouseEvent> eventHandler){
         for (Tile cursorTile: cursorTiles){
@@ -152,24 +144,38 @@ public class MouseMovementTracker extends Pane {
             removeEventHandler(MouseEvent.MOUSE_CLICKED, handler);
         }
         eventHandlers.add(eventHandler);
+        removeEventHandler(MouseEvent.MOUSE_PRESSED, pressHandler);
+        removeEventHandler(MouseEvent.DRAG_DETECTED, coordinateHandler);
+        setOnMouseDragged(e -> {});
+        setOnMouseDragReleased(e -> {});
+        setOnMouseDragExited(e -> {});
     }
 
-    EventHandler<MouseEvent> roadSelectionDragTileRemover = new EventHandler<MouseEvent>() {
+    EventHandler<MouseEvent> roadSelectionDragTileRemover = new EventHandler<>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-            for (RoadSelectionDragTile roadSelectionDragTile: roadSelectionDragTiles){
-                //roadSelectionDragTile.invalidated(roadSelectionDragTile);
+            for (RoadSelectionDragTile roadSelectionDragTile : roadSelectionDragTiles) {
                 getChildren().remove(roadSelectionDragTile);
+                if (roadSelectionDragTile.getColor().equals(Color.rgb(90, 155,255, 0.5))) {
+                    placeRoad(roadSelectionDragTile.getR(), roadSelectionDragTile.getK());
+                }
             }
+            roadSelectionDragTiles.clear();
         }
     };
 
-    //om het startcoordinaat van de drag te krijgen
     EventHandler<MouseEvent> coordinateHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-            rDrag = getR(mouseEvent);
-            kDrag = getK(mouseEvent);
+            //cursor blijft voor een splitseconde zichtbaar voor het draggen
+
+            removeEventHandler(MouseEvent.MOUSE_CLICKED, roadHandler);
+            startFullDrag();
+            setOnMouseDragged(roadSelectionHandler);
+            setOnMouseDragReleased(roadSelectionDragTileRemover);
+            setOnMouseDragOver(e -> { addEventHandler(MouseEvent.MOUSE_CLICKED, roadHandler);
+                setTranslateXY(cursorTile, getR(e), getK(e));
+                });
         }
     };
 
@@ -178,33 +184,33 @@ public class MouseMovementTracker extends Pane {
         public void handle(MouseEvent mouseEvent) {
             int r = getR(mouseEvent);
             int k = getK(mouseEvent);
-            for (RoadSelectionDragTile roadSelectionDragTile: roadSelectionDragTiles){
-                getChildren().remove(roadSelectionDragTile);
-            }
-            if (rDrag > r){//cursor boven oorsprong
-                for (int i = rDrag; i > r; i--){
-                    placeRoadSelectionDragTile(i , kDrag);
+            //if (rDrag>=0 && rDrag<32 && kDrag>=0 && kDrag<32) {
+                for (RoadSelectionDragTile roadSelectionDragTile : roadSelectionDragTiles) {
+                    getChildren().remove(roadSelectionDragTile);
                 }
-            } else if (rDrag < r){//cursor onder oorsprong
-                for (int i = rDrag; i < r; i++){
-                    placeRoadSelectionDragTile(i , kDrag);
-                }
-            }
+                roadSelectionDragTiles.clear();
 
-            if (kDrag > k){//cursor boven oorsprong
-                for (int i = kDrag; i > k; i--){
-                    placeRoadSelectionDragTile(r , i);
+                int min = Math.max(Math.min(r, rDrag), 0);
+                int max = Math.min(Math.max(r, rDrag), 31);
+                for (int i = min; i <= max; i++) {
+                    placeRoadSelectionDragTile(i, kDrag);
                 }
-            } else if (kDrag < k){//cursor onder oorsprong
-                for (int i = kDrag; i < k; i++){
-                    placeRoadSelectionDragTile(r , i);
+
+                min = Math.max(Math.min(k, kDrag), 0);
+                max = Math.min(Math.max(k, kDrag), 31);
+                r = Math.max(Math.min(r, 31), 0);
+                for (int i = min; i <= max; i++) {
+                    placeRoadSelectionDragTile(r, i);
                 }
-            }
+                for (RoadSelectionDragTile roadSelectionDragTile : roadSelectionDragTiles) {
+                    roadSelectionDragTile.checkValidity(roadSelectionDragTile.getR(), roadSelectionDragTile.getK());
+                }
+            //}
         }
     };
 
     public void placeRoadSelectionDragTile(int r, int k){
-        RoadSelectionDragTile roadSelectionDragTile = new RoadSelectionDragTile(tiles, r, k);
+        RoadSelectionDragTile roadSelectionDragTile = new RoadSelectionDragTile(tiles, r, k, this);
         roadSelectionDragTiles.add(roadSelectionDragTile);
         getChildren().add(roadSelectionDragTile);
         setTranslateXY(roadSelectionDragTile, r, k);

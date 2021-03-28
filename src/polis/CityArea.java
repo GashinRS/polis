@@ -5,6 +5,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import tiles.Area;
 
 /**
  * Dit is de eigenlijke stad met het groene veld en alle gebouwen en wegen.
@@ -14,19 +15,12 @@ public class CityArea extends Pane {
 
     private MouseMovementTracker mouseMovementTracker;
 
-    private static final Polygon area = new Polygon(
-                0, 0,
-                        64 * 32, 0.5 * 64 * 32,
-                        0, 64 * 32,
-                        -64 * 32, 0.5 * 64 * 32
-    );
-
     public CityArea(){
         this.setPrefWidth(64 * 2 * 32);
         this.setPrefHeight(64 * 32);
         this.setFocusTraversable(true);
 
-        area.setFill(Color.rgb(204,249,170));
+        Area area = new Area();
         area.setTranslateX(64 * 32);
         area.setTranslateY(0);
 
