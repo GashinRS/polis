@@ -1,6 +1,7 @@
 package tiles;
 
 import javafx.util.Pair;
+import polis.MouseMovementTracker;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,6 @@ public class NonRemovableRoadTile extends RoadTile{
     }
 
     @Override
-    public void removeThis(){}
+    public void removeThis(MouseMovementTracker mouseMovementTracker){}
 
 }

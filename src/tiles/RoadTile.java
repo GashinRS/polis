@@ -5,6 +5,7 @@ import javafx.beans.Observable;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.util.Pair;
+import polis.MouseMovementTracker;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class RoadTile extends SmallTile {
 
     protected int r;
     protected int k;
-    protected boolean duplicate;
+    //protected boolean duplicate;
     protected int imageNumber;
     //Deze map bevat de mogelijke coordinaten van de buren van een RoadTile, en wordt gebruikt om bij het checkNeighbors
     //om 4 ifs in te korten naar 1 enkele if
@@ -31,13 +32,12 @@ public class RoadTile extends SmallTile {
         this.tiles = tiles;
         this.roadTileList = roadTileList;
 
-
-        int index = 0;
-        while (!duplicate && index < roadTileList.size()){
-            duplicate = (roadTileList.get(index).getR() == r && roadTileList.get(index).getK() == k);
-            index++;
-        }
-        if (!duplicate) {
+//        int index = 0;
+//        while (!duplicate && index < roadTileList.size()){
+//            duplicate = (roadTileList.get(index).getR() == r && roadTileList.get(index).getK() == k);
+//            index++;
+//        }
+//        if (!duplicate) {
             states = Map.of(
                     r-1, Map.of(k,1),
                     r, Map.of(k+1,2,
@@ -52,7 +52,7 @@ public class RoadTile extends SmallTile {
                 roadTile.addListener(this);
             }
             setImage(imageNumber);
-        }
+//        }
     }
 
     /**
@@ -62,6 +62,7 @@ public class RoadTile extends SmallTile {
      * de boolean als parameter. In de for each loop wordt gekeken of de huidige tile een buur is, en zo ja, wordt aan
      * de hand van de map states het juiste getal bepaald om toe te voegen aan de variabele number.
      */
+    //later nog fixen met de map tiles en gwn kijken of iets null is
     public int checkNeighbors(List<RoadTile> roadTileList, boolean firstTime){
         int number = 0;
         for (RoadTile roadTile:roadTileList){
@@ -122,12 +123,14 @@ public class RoadTile extends SmallTile {
         return k;
     }
 
-    public boolean isDuplicate() {
-        return duplicate;
-    }
+
+//    //als de L shape gefixed is kan dit verwijderd worden
+//    public boolean isDuplicate() {
+//        return duplicate;
+//    }
 
     @Override
-    public void removeThis(){
+    public void removeThis(MouseMovementTracker mouseMovementTracker){
         //for loop is code duplicatie
         //clean later nog wa, mss betere manier dan te casten
         roadTileList.remove(this);
@@ -137,5 +140,6 @@ public class RoadTile extends SmallTile {
             ((RoadTile) listener).removeListener(this);
             listener.invalidated(this);
         }
+        mouseMovementTracker.getChildren().remove(this);
     }
 }

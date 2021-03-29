@@ -3,6 +3,7 @@ package tiles;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.scene.shape.Polygon;
+import polis.MouseMovementTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,6 @@ public abstract class Tile extends Polygon implements InvalidationListener, Obse
         listenerList.remove(invalidationListener);
     }
 
-    public void removeThis(){}
+    public void removeThis(MouseMovementTracker mouseMovementTracker){}
 
 }

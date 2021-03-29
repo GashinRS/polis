@@ -20,27 +20,6 @@ public class RoadSelectionDragTile extends RoadSelectionTile{
         this.mouseMovementTracker = mouseMovementTracker;
     }
 
-    public void checkOutOfBound(List<RoadSelectionDragTile> roadSelectionTiles){
-        if(!(r>=0 && r<32 && k>=0 && k<32)){
-            roadSelectionTiles.remove(this);
-            mouseMovementTracker.getChildren().remove(this);
-        }
-    }
-
-//    @Override
-//    public void checkValidity(int r, int k){
-//        if(r>=0 && r<32 && k>=0 && k<32){
-//            super.checkValidity(r, k);
-//        } else {
-//            mouseMovementTracker.getRoadSelectionDragTiles().remove(this);
-//            mouseMovementTracker.getChildren().remove(this);
-//        }
-//    }
-
-    @Override
-    public void invalidated(Observable observable){
-    }
-
     public int getR() {
         return r;
     }

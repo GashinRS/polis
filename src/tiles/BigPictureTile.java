@@ -32,9 +32,10 @@ public class BigPictureTile extends BigTile{
      * Verwijdert de tile uit de lijst van tiles
      */
     @Override
-    public void removeThis(){
+    public void removeThis(MouseMovementTracker mouseMovementTracker){
         for (int i = 0; i<4; i++){
             tiles.values().remove(this);
         }
+        mouseMovementTracker.getChildren().remove(this);
     }
 }
