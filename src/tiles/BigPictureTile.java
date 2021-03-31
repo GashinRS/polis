@@ -23,11 +23,6 @@ public class BigPictureTile extends BigTile{
         this.tiles = tiles;
     }
 
-    @Override
-    public void checkValidity(int r, int k) {
-
-    }
-
     /**
      * Verwijdert de tile uit de lijst van tiles
      */

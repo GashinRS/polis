@@ -16,14 +16,11 @@ public class RoadTile extends SmallTile {
 
     protected int r;
     protected int k;
-    //protected boolean duplicate;
     protected int imageNumber;
     //Deze map bevat de mogelijke coordinaten van de buren van een RoadTile, en wordt gebruikt om bij het checkNeighbors
     //om 4 ifs in te korten naar 1 enkele if
     protected Map<Integer, Map <Integer, Integer>> states;
-
     protected List<RoadTile> roadTileList;
-
     //fix later?
     protected Map<Pair<Integer, Integer>, Tile> tiles;
 
@@ -31,28 +28,20 @@ public class RoadTile extends SmallTile {
         //clean later
         this.tiles = tiles;
         this.roadTileList = roadTileList;
-
-//        int index = 0;
-//        while (!duplicate && index < roadTileList.size()){
-//            duplicate = (roadTileList.get(index).getR() == r && roadTileList.get(index).getK() == k);
-//            index++;
-//        }
-//        if (!duplicate) {
-            states = Map.of(
-                    r-1, Map.of(k,1),
-                    r, Map.of(k+1,2,
-                            k-1, 8),
-                    r+1, Map.of(k,4));
-            this.r = r;
-            this.k = k;
-            imageNumber = checkNeighbors(roadTileList, true);
-            //Voegt het object zelf toe als listener bij zijn buren
-            for (InvalidationListener listener : listenerList) {
-                RoadTile roadTile = (RoadTile) listener;
-                roadTile.addListener(this);
-            }
-            setImage(imageNumber);
-//        }
+        states = Map.of(
+                r-1, Map.of(k,1),
+                r, Map.of(k+1,2,
+                        k-1, 8),
+                r+1, Map.of(k,4));
+        this.r = r;
+        this.k = k;
+        imageNumber = checkNeighbors(roadTileList, true);
+        //Voegt het object zelf toe als listener bij zijn buren
+        for (InvalidationListener listener : listenerList) {
+            RoadTile roadTile = (RoadTile) listener;
+            roadTile.addListener(this);
+        }
+        setImage(imageNumber);
     }
 
     /**
@@ -123,20 +112,11 @@ public class RoadTile extends SmallTile {
         return k;
     }
 
-
-//    //als de L shape gefixed is kan dit verwijderd worden
-//    public boolean isDuplicate() {
-//        return duplicate;
-//    }
-
     @Override
     public void removeThis(MouseMovementTracker mouseMovementTracker){
-        //for loop is code duplicatie
-        //clean later nog wa, mss betere manier dan te casten
         roadTileList.remove(this);
         tiles.values().remove(this);
         for (InvalidationListener listener : listenerList) {
-            //RoadTile roadTile = (RoadTile) listener;
             ((RoadTile) listener).removeListener(this);
             listener.invalidated(this);
         }

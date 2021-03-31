@@ -26,6 +26,7 @@ public class BigSelectionTile extends BigTile{
         setFill(color);
     }
 
+    //code duplicatie met roadSelectionTile
     public boolean isValid(){
         return color.equals(Color.rgb(90, 155, 255, 0.5));
     }
