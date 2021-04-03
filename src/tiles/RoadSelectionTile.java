@@ -25,10 +25,6 @@ public class RoadSelectionTile extends SmallTile{
         setFill(color);
     }
 
-    public Color getColor(){
-        return color;
-    }
-
     //code duplicatie met bigSelectionTile
     public boolean isValid(){
         return color.equals(Color.rgb(90, 155, 255, 0.5));

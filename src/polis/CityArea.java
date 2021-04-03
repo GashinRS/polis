@@ -27,11 +27,6 @@ public class CityArea extends Pane {
         this.getChildren().add(area);
     }
 
-    public void setTranslateXY(Polygon polygon, int r, int k){
-        polygon.setTranslateX(64 * (32 - r + k));
-        polygon.setTranslateY(64 * (r + k) / 2);
-    }
-
     public void setMouseMovementTracker(MouseMovementTracker mouseMovementTracker) {
         this.mouseMovementTracker = mouseMovementTracker;
         this.getChildren().add(mouseMovementTracker);

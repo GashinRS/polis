@@ -29,6 +29,7 @@ public class BigPictureTileHandler implements EventHandler<MouseEvent> {
     public void handle(MouseEvent mouseEvent) {
         int r = mouseMovementTracker.getR(mouseEvent);
         int k = mouseMovementTracker.getK(mouseEvent);
+        //if conditie optimizen
         if (bigSelectionTile.isValid() && r>=0 && r<31 && k>=0 && k<31) {
             BigPictureTile bigPictureTile = new BigPictureTile(bigPictureTileType, tiles);
             mouseMovementTracker.getChildren().add(bigPictureTile);

@@ -62,11 +62,6 @@ public class RoadTile extends SmallTile {
                     addListener(roadTile);
                 }
             }
-//            try {
-//            number += states.get(roadTile.getR()).get(roadTile.getK());
-//            if (firstTime) {
-//                    addListener(roadTile);
-//            }} catch (NullPointerException e){ }
         }
         return number;
     }

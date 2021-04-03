@@ -18,7 +18,7 @@ public class CityContainer extends StackPane {
         this.setPrefSize(1500,1000);
 
         CityArea cityArea = new CityArea();
-        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker(cityArea);
+        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker();
         cityArea.setMouseMovementTracker(mouseMovementTracker);
 
         CityUI cityUI = new CityUI(mouseMovementTracker);
