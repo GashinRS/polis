@@ -1,25 +1,33 @@
 package tiles;
 
-import javafx.util.Pair;
 import polis.MouseMovementTracker;
-
-import java.util.Map;
 
 public class RoadSelectionDragTile extends RoadSelectionTile{
 
     private final int r;
     private final int k;
 
-    public RoadSelectionDragTile(Map<Pair<Integer, Integer>, Tile> tiles, int r, int k) {
-        super(tiles);
+    public RoadSelectionDragTile(int r, int k, MouseMovementTracker mouseMovementTracker) {
+        super(mouseMovementTracker);
         this.r = r;
         this.k = k;
+        mouseMovementTracker.setTranslateXY(this, r, k);
+        mouseMovementTracker.getChildren().add(this);
+        checkValidity(r, k);
     }
 
+    @Override
+    public void invalidated(){
+        getMouseMovementTracker().getChildren().remove(this);
+        super.invalidated();
+    }
+
+    @Override
     public int getR() {
         return r;
     }
 
+    @Override
     public int getK() {
         return k;
     }

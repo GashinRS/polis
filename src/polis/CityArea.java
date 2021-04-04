@@ -1,15 +1,8 @@
 package polis;
 
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import tiles.Area;
 
-/**
- * Dit is de eigenlijke stad met het groene veld en alle gebouwen en wegen.
- */
 
 public class CityArea extends Pane {
 

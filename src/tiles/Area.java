@@ -8,4 +8,5 @@ public class Area extends Tile{
         super(32);
         setFill(Color.rgb(204,249,170));
     }
+
 }

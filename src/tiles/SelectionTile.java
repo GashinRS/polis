@@ -1,13 +1,19 @@
 package tiles;
 
 import javafx.scene.paint.Color;
+import polis.MouseMovementTracker;
 
-public class SelectionTile extends SmallTile {
+public class SelectionTile extends CursorTile{
 
-    public SelectionTile() {
+    public SelectionTile(MouseMovementTracker mouseMovementTracker) {
+        super(1, mouseMovementTracker);
         setFill(Color.TRANSPARENT);
         setStroke(Color.PURPLE);
         setStrokeWidth(5);
     }
 
+    @Override
+    public int getCellSize() {
+        return 1;
+    }
 }

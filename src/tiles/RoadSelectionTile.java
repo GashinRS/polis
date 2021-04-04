@@ -2,31 +2,41 @@ package tiles;
 
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import polis.MouseMovementTracker;
 
-import java.util.Map;
-
-public class RoadSelectionTile extends SmallTile{
+public class RoadSelectionTile extends CursorTile{
 
     private Color color;
-    private Map<Pair<Integer, Integer>, Tile> tiles;
 
-    public RoadSelectionTile(Map<Pair<Integer, Integer>, Tile> tiles) {
+    public RoadSelectionTile(MouseMovementTracker mouseMovementTracker) {
+        super(1, mouseMovementTracker);
         setFill(Color.rgb(90, 155,255, 0.5));
-        this.tiles = tiles;
+    }
+
+    public void invalidated(){
+        if (isValid()){
+            getMouseMovementTracker().getChildren().add(new RoadTile(getR(), getK(), getMouseMovementTracker()));
+        }
     }
 
     @Override
     public void checkValidity(int r, int k){
-        if (tiles.get(new Pair<>(r, k)) == null){
-            color = Color.rgb(90, 155,255, 0.5);
+        super.checkValidity(r, k);
+        if (getMouseMovementTracker().getTiles().get(new Pair<>(r, k)) == null){
+            color = getBlue();
         } else {
-            color = Color.rgb(225, 40,70, 0.5);
+            color = getRed();
         }
         setFill(color);
     }
 
-    //code duplicatie met bigSelectionTile
+    @Override
+    public int getCellSize() {
+        return 1;
+    }
+
+    @Override
     public boolean isValid(){
-        return color.equals(Color.rgb(90, 155, 255, 0.5));
+        return color.equals(getBlue());
     }
 }
