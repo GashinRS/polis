@@ -31,11 +31,6 @@ public class RoadSelectionTile extends CursorTile{
     }
 
     @Override
-    public int getCellSize() {
-        return 1;
-    }
-
-    @Override
     public boolean isValid(){
         return color.equals(getBlue());
     }

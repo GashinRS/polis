@@ -26,11 +26,6 @@ public class BigSelectionTile extends CursorTile{
     }
 
     @Override
-    public int getCellSize() {
-        return 2;
-    }
-
-    @Override
     public boolean isValid(){
         return color.equals(getBlue());
     }

@@ -19,10 +19,11 @@ public class RoadTile extends RemovableTile{
     protected MouseMovementTracker mouseMovementTracker;
 
     public RoadTile(int r, int k, MouseMovementTracker mouseMovementTracker) {
-        super(1);
+        super(1, r, k);
         this.r=r;
         this.k=k;
         this.mouseMovementTracker=mouseMovementTracker;
+        setViewOrder(-r -k -1);
         mouseMovementTracker.getRoadTiles().put(new Pair<>(r, k), this);
         mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
         mouseMovementTracker.setTranslateXY(this, r, k);
@@ -80,7 +81,7 @@ public class RoadTile extends RemovableTile{
     }
 
     @Override
-    public void removeThis(MouseMovementTracker mouseMovementTracker){
+    public void removeThis(){
         mouseMovementTracker.getRoadTiles().remove(new Pair<>(getR(), getK()));
         mouseMovementTracker.getTiles().remove(new Pair<>(getR(), getK()));
         for (RoadTile neighbor:neighbors){

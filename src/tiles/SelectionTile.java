@@ -11,9 +11,4 @@ public class SelectionTile extends CursorTile{
         setStroke(Color.PURPLE);
         setStrokeWidth(5);
     }
-
-    @Override
-    public int getCellSize() {
-        return 1;
-    }
 }

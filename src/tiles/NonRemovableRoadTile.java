@@ -9,6 +9,6 @@ public class NonRemovableRoadTile extends RoadTile{
     }
 
     @Override
-    public void removeThis(MouseMovementTracker mouseMovementTracker){}
+    public void removeThis(){}
 
 }

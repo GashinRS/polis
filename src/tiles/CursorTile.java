@@ -50,6 +50,4 @@ public abstract class CursorTile extends Tile {
         return false;
     }
 
-    public abstract int getCellSize();
-
 }
