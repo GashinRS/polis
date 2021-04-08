@@ -15,17 +15,22 @@ import java.util.List;
 
 public class CityUI extends VBox {
 
-    //https://www.tutorialspoint.com/how-to-add-an-image-to-a-button-action-in-javafx
-    //afbeelding op buttons krijgen
+    private final GameButton roadButton;
+    private final GameButton selectionButton;
+    private final GameButton bulldozerButton;
+    private final GameButton commerceButton;
+    private final GameButton industryButton;
+    private final GameButton residenceButton;
+
     public CityUI(MouseMovementTracker mouseMovementTracker){
         int buttonWidth = 75;
         int buttonHeight = 50;
-        ToggleButton roadButton = new RoadButton("road", buttonWidth, buttonHeight, mouseMovementTracker);
-        ToggleButton selectionButton = new SelectionButton("selection", buttonWidth, buttonHeight, mouseMovementTracker);
-        ToggleButton bulldozerButton = new BulldozerButton("bulldozer", buttonWidth, buttonHeight, mouseMovementTracker);
-        ToggleButton commerceButton = new CommerceButton("commerce", buttonWidth, buttonHeight, mouseMovementTracker);
-        ToggleButton industryButton = new IndustryButton("industry", buttonWidth, buttonHeight, mouseMovementTracker);
-        ToggleButton residenceButton = new ResidenceButton("residence", buttonWidth, buttonHeight, mouseMovementTracker);
+        roadButton = new RoadButton("road", buttonWidth, buttonHeight, mouseMovementTracker);
+        selectionButton = new SelectionButton("selection", buttonWidth, buttonHeight, mouseMovementTracker);
+        bulldozerButton = new BulldozerButton("bulldozer", buttonWidth, buttonHeight, mouseMovementTracker);
+        commerceButton = new CommerceButton("commerce", buttonWidth, buttonHeight, mouseMovementTracker);
+        industryButton = new IndustryButton("industry", buttonWidth, buttonHeight, mouseMovementTracker);
+        residenceButton = new ResidenceButton("residence", buttonWidth, buttonHeight, mouseMovementTracker);
 
         ToggleGroup toggleGroup = new ToggleGroup();
         roadButton.setToggleGroup(toggleGroup);
@@ -55,5 +60,29 @@ public class CityUI extends VBox {
             }
             setSpacing(10);
         }
+    }
+
+    public GameButton getRoadButton() {
+        return roadButton;
+    }
+
+    public GameButton getSelectionButton() {
+        return selectionButton;
+    }
+
+    public GameButton getBulldozerButton() {
+        return bulldozerButton;
+    }
+
+    public GameButton getCommerceButton() {
+        return commerceButton;
+    }
+
+    public GameButton getIndustryButton() {
+        return industryButton;
+    }
+
+    public GameButton getResidenceButton() {
+        return residenceButton;
     }
 }

@@ -1,16 +1,19 @@
 package buttons;
 
-import javafx.event.ActionEvent;
 import polis.MouseMovementTracker;
 
-public class SelectionButton extends MyButton {
+public class SelectionButton extends GameButton {
 
     public SelectionButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
         super(filename, width, height, mouseMovementTracker);
     }
 
+//    @Override
+//    public void handle(ActionEvent ae){
+//        mouseMovementTracker.setSelectionMode();
+//    }
     @Override
-    public void handle(ActionEvent ae){
+    public void buttonSelected(){
         mouseMovementTracker.setSelectionMode();
     }
 }

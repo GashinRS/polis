@@ -1,5 +1,6 @@
 package polis;
 
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import tiles.Area;
 
@@ -18,7 +19,6 @@ public class CityArea extends Pane {
         area.setTranslateY(0);
 
         this.getChildren().add(area);
-
     }
 
     public void setMouseMovementTracker(MouseMovementTracker mouseMovementTracker) {

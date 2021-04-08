@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.InputStream;
 
-public class PlayButton extends Button {
+public class PlayButton extends Button implements MyButton {
 
     private final ImageView[] imageViews;
     private int counter;
@@ -16,7 +16,7 @@ public class PlayButton extends Button {
              InputStream pauseIn = this.getClass().getResourceAsStream("/polis/buttons/" + pause)){
             ImageView playImageView = new ImageView(new Image(playIn));
             ImageView pauseImageView = new ImageView(new Image(pauseIn));
-            this.setGraphic(playImageView);
+            setGraphic(playImageView);
             imageViews[0] = pauseImageView;
             imageViews[1] = playImageView;
         } catch (Exception ex) {
@@ -25,11 +25,12 @@ public class PlayButton extends Button {
         this.setPrefSize(width, height);
         this.setFocusTraversable(false);
         counter = 0;
-        this.setOnAction(value -> setImage(imageViews[counter%2]));
+        this.setOnAction(value -> buttonPressed());
     }
 
-    private void setImage(ImageView imageView){
-        this.setGraphic(imageView);
+    @Override
+    public void buttonPressed(){
+        setGraphic(imageViews[counter%2]);
         counter++;
     }
 }

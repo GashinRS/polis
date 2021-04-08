@@ -32,7 +32,7 @@ public class BigPictureTile extends RemovableTile {
             //ivm NPE imageview/vieworder
             imageView.setMouseTransparent(true);
 
-            setImageNumber();
+            upgrade();
             mouseMovementTracker.getChildren().add(imageView);
             imageView.setTranslateX(64 * (32 - getR() + getK()));
             imageView.setTranslateY(64 * (getR() + getK()) / 2);
@@ -58,7 +58,7 @@ public class BigPictureTile extends RemovableTile {
         mouseMovementTracker.getChildren().remove(imageView);
     }
 
-    public void setImageNumber() {
+    public void upgrade() {
         imageView.setImage(images.get(imageNumber % 4));
         double width = images.get(imageNumber % 4).getWidth();
         double height = images.get(imageNumber % 4).getHeight();

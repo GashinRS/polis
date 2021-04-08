@@ -2,6 +2,7 @@ package polis;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -86,10 +87,9 @@ public class MouseMovementTracker extends Pane {
     public void setSelectionMode() {
         selectionTile.setStroke(Color.WHITE);
         switchMode(selectionTile, e -> {
-            //tijdelijk
             RemovableTile tile = tiles.get(new Pair<>(getR(e), getK(e)));
-            if (tile instanceof BigPictureTile) {
-                ((BigPictureTile) tile).setImageNumber();
+            if (tile != null) {
+                tile.upgrade();
             }
         });
     }

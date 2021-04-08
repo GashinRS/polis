@@ -1,11 +1,15 @@
 package polis;
 
+import buttons.MyButton;
 import buttons.PlayButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import prog2.util.Viewport;
+
+import java.util.Map;
 
 /**
  * Dit is de hoofdcontainer waarin alle andere containers en nodes zitten.
@@ -30,5 +34,22 @@ public class CityContainer extends StackPane {
         setAlignment(playButton, Pos.BOTTOM_LEFT);
 
         this.getChildren().addAll(new Viewport(cityArea, 0.5), cityUI, playButton);
+
+        Map<KeyCode, MyButton> buttonKeyMappings = Map.of(
+                KeyCode.R, cityUI.getResidenceButton(),
+                KeyCode.I, cityUI.getIndustryButton(),
+                KeyCode.C, cityUI.getCommerceButton(),
+                KeyCode.S, cityUI.getRoadButton(),
+                KeyCode.B, cityUI.getBulldozerButton(),
+                KeyCode.ESCAPE, cityUI.getSelectionButton(),
+                KeyCode.SPACE, playButton);
+
+        setOnKeyPressed(e -> {
+            if (buttonKeyMappings.containsKey(e.getCode())) {
+                MyButton button = buttonKeyMappings.get(e.getCode());
+                button.buttonPressed();
+            }
+        });
     }
+
 }

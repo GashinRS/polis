@@ -21,4 +21,7 @@ public abstract class RemovableTile extends Tile{
     public int getK(){
         return k;
     }
+
+    //wordt enkel gebruikt in BigPictureTile, maar staat hier zodat een if vermeden kan worden bij selection mode
+    public void upgrade(){}
 }
