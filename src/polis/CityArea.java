@@ -1,12 +1,7 @@
 package polis;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
 import tiles.Area;
-
-import java.io.InputStream;
 
 
 public class CityArea extends Pane {
@@ -24,15 +19,6 @@ public class CityArea extends Pane {
 
         this.getChildren().add(area);
 
-//        try (InputStream in = this.getClass().getResourceAsStream("/polis/tiles/industry-3.png")){
-//            //ImagePattern imagePattern = new ImagePattern(new Image(in));
-//            ImageView imageView = new ImageView(new Image(in));
-//            getChildren().add(imageView);
-//            imageView.setTranslateX(64 * (32 - 1 + 1));
-//            imageView.setTranslateY(64 * (1 + 1) / 2);
-//        } catch (Exception ex) {
-//            System.err.println("bestand niet gevonden");
-//        }
     }
 
     public void setMouseMovementTracker(MouseMovementTracker mouseMovementTracker) {

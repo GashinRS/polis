@@ -1,8 +1,10 @@
 package buttons;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import polis.MouseMovementTracker;
@@ -13,7 +15,7 @@ import java.io.InputStream;
  * gemeenschappelijke bovenklase voor alle buttons behalve de play button
  */
 
-public abstract class MyButton extends Button implements EventHandler<ActionEvent> {
+public abstract class MyButton extends ToggleButton implements EventHandler<ActionEvent>, InvalidationListener {
 
     protected MouseMovementTracker mouseMovementTracker;
 
@@ -24,15 +26,22 @@ public abstract class MyButton extends Button implements EventHandler<ActionEven
         } catch (Exception ex) {
             System.err.println("bestand niet gevonden");
         }
-        this.setPrefSize(width, height);
+        setPrefSize(width, height);
         this.mouseMovementTracker = mouseMovementTracker;
-        this.setFocusTraversable(false);
-        this.setOnAction(this);
+        setFocusTraversable(false);
+        setOnAction(this);
+
     }
 
 
     @Override
     public void handle(ActionEvent ae){
+        //setBackground(new Background(new BackgroundFill(Color.rgb(150, 175,205, 0.6), CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    @Override
+    public void invalidated(Observable o){
+        //setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
 }

@@ -1,7 +1,6 @@
 package buttons;
 
 import javafx.event.ActionEvent;
-import javafx.scene.image.ImageView;
 import polis.MouseMovementTracker;
 
 public class RoadButton extends MyButton {

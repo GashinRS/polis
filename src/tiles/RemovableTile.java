@@ -1,7 +1,5 @@
 package tiles;
 
-import polis.MouseMovementTracker;
-
 public abstract class RemovableTile extends Tile{
 
     private final int r;

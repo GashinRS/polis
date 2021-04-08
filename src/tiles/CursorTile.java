@@ -14,6 +14,7 @@ public abstract class CursorTile extends Tile {
     public CursorTile(int cellSize, MouseMovementTracker mouseMovementTracker) {
         super(cellSize);
         this.mouseMovementTracker=mouseMovementTracker;
+        setViewOrder(-100);
     }
 
     public void setRK(int r, int k) {

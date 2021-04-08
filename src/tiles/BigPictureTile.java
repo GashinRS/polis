@@ -2,12 +2,10 @@ package tiles;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.ImagePattern;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +29,9 @@ public class BigPictureTile extends RemovableTile {
              InputStream in3 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-3.png")) {
             images = List.of(new Image(in0), new Image(in1), new Image(in2), new Image(in3));
             imageView = new ImageView(images.get(0));
+            //ivm NPE imageview/vieworder
+            imageView.setMouseTransparent(true);
+
             setImageNumber();
             mouseMovementTracker.getChildren().add(imageView);
             imageView.setTranslateX(64 * (32 - getR() + getK()));
@@ -53,8 +54,8 @@ public class BigPictureTile extends RemovableTile {
         }
 
         //onduidelijke bug
-        imageView.setVisible(false);
-        //mouseMovementTracker.getChildren().remove(imageView);
+        //imageView.setVisible(false);
+        mouseMovementTracker.getChildren().remove(imageView);
     }
 
     public void setImageNumber() {
