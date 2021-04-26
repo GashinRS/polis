@@ -44,7 +44,7 @@ public abstract class CursorTile extends Tile {
 
     public void checkValidity(int r, int k){
         setRK(r, k);
-        mouseMovementTracker.setTranslateXY(this, r, k);
+        mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
     }
 
     public boolean isValid(){

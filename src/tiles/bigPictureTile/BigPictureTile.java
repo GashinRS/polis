@@ -1,9 +1,10 @@
-package tiles;
+package tiles.bigPictureTile;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
+import tiles.RemovableTile;
 
 import java.io.InputStream;
 import java.util.List;
@@ -18,9 +19,11 @@ public class BigPictureTile extends RemovableTile {
     private final MouseMovementTracker mouseMovementTracker;
     private ImageView imageView;
     private List<Image> images;
+    private final String type;
 
     public BigPictureTile(String type, int r, int k, MouseMovementTracker mouseMovementTracker) {
         super(2, r, k);
+        this.type=type;
         this.mouseMovementTracker = mouseMovementTracker;
         imageNumber = 0;
         try (InputStream in0 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-0.png");
@@ -33,7 +36,7 @@ public class BigPictureTile extends RemovableTile {
             imageView.setMouseTransparent(true);
 
             upgrade();
-            mouseMovementTracker.getChildren().add(imageView);
+            mouseMovementTracker.getCityArea().getChildren().add(imageView);
             imageView.setTranslateX(64 * (32 - getR() + getK()));
             imageView.setTranslateY(64 * (getR() + getK()) / 2);
             imageView.setViewOrder(-r - k - 2);
@@ -44,7 +47,7 @@ public class BigPictureTile extends RemovableTile {
         mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k), this);
         mouseMovementTracker.getTiles().put(new Pair<>(r, k + 1), this);
         mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k + 1), this);
-        mouseMovementTracker.setTranslateXY(this, r, k);
+        mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class BigPictureTile extends RemovableTile {
 
         //onduidelijke bug
         //imageView.setVisible(false);
-        mouseMovementTracker.getChildren().remove(imageView);
+        mouseMovementTracker.getCityArea().getChildren().remove(imageView);
     }
 
     public void upgrade() {
@@ -66,5 +69,17 @@ public class BigPictureTile extends RemovableTile {
         imageView.setX(-0.5 * width);
         imageView.setY(0.5 * width - height);
         imageNumber++;
+    }
+
+    public boolean isResidence(){
+        return type.equals("residence");
+    }
+
+    public boolean isCommerce(){
+        return type.equals("commerce");
+    }
+
+    public boolean isIndustry(){
+        return type.equals("industry");
     }
 }

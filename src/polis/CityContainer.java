@@ -21,9 +21,9 @@ public class CityContainer extends StackPane {
         this.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setPrefSize(1500,1000);
 
-        CityArea cityArea = new CityArea();
+
         MouseMovementTracker mouseMovementTracker = new MouseMovementTracker();
-        cityArea.setMouseMovementTracker(mouseMovementTracker);
+        CityArea cityArea = new CityArea(mouseMovementTracker);
 
         CityUI cityUI = new CityUI(mouseMovementTracker);
         PlayButton playButton = new PlayButton("play.png", "pause.png", 75, 50);

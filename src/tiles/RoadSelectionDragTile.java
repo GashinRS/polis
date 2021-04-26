@@ -1,5 +1,6 @@
 package tiles;
 
+import javafx.beans.Observable;
 import polis.MouseMovementTracker;
 
 public class RoadSelectionDragTile extends RoadSelectionTile{
@@ -11,15 +12,15 @@ public class RoadSelectionDragTile extends RoadSelectionTile{
         super(mouseMovementTracker);
         this.r = r;
         this.k = k;
-        mouseMovementTracker.setTranslateXY(this, r, k);
-        mouseMovementTracker.getChildren().add(this);
+        mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
+        mouseMovementTracker.getCityArea().getChildren().add(this);
         checkValidity(r, k);
     }
 
     @Override
-    public void invalidated(){
-        getMouseMovementTracker().getChildren().remove(this);
-        super.invalidated();
+    public void invalidated(Observable o){
+        getMouseMovementTracker().getCityArea().getChildren().remove(this);
+        super.invalidated(o);
     }
 
     @Override

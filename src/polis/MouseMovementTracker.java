@@ -1,17 +1,20 @@
 package polis;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
+import simulatie.Region;
 import tiles.*;
+import tiles.bigPictureTile.BigPictureTile;
+import tiles.bigPictureTile.ResidenceTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MouseMovementTracker extends Pane {
+public class MouseMovementTracker extends Pane implements Observable {
 
     private Map<Pair<Integer, Integer>, RoadTile> roadTiles = new HashMap<>();
-    private List<RoadSelectionDragTile> roadSelectionDragTiles = new ArrayList<>();
+    private List<InvalidationListener> roadSelectionDragTiles = new ArrayList<>();
     private Map<Pair<Integer, Integer>, RemovableTile> tiles = new HashMap<>();
 
     private final SelectionTile selectionTile = new SelectionTile(this);
@@ -34,25 +37,34 @@ public class MouseMovementTracker extends Pane {
     //Startcoordinaten van het slepen bij het plaatsen van wegen
     private int rDrag;
     private int kDrag;
+    private CityArea cityArea;
+    private Region region;
+    private static final Map<String, BigPictureTile> bigPictureTileMap = Map.of(
+            "residence", new ResidenceTile(),
+
+    );
 
     public MouseMovementTracker() {
         setPrefSize(64 * 2 * 32, 64 * 32);
         setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-        getChildren().addAll(selectionTile, roadSelectionTile, bigSelectionTile);
         setSelectionMode();
         setOnMouseMoved(e -> {
             int r = Math.max(Math.min(getR(e), 32 - cursorTile.getCellSize()), 0);
             int k = Math.max(Math.min(getK(e), 32 - cursorTile.getCellSize()), 0);
             cursorTile.checkValidity(r, k);
         });
-        for (int i = 0; i < 16; i++) {
-            getChildren().add(new NonRemovableRoadTile(i, 14, this));
-        }
+        region = new Region(this);
     }
 
-    public void setTranslateXY(Polygon polygon, int r, int k) {
-        polygon.setTranslateX(64 * (32 - r + k));
-        polygon.setTranslateY(64 * (r + k) / 2);
+    public void setCityArea(CityArea cityArea){
+        this.cityArea=cityArea;
+        cityArea.getChildren().addAll(selectionTile, roadSelectionTile, bigSelectionTile);
+        //cityArea.getChildren().add(new Immigrant(this));
+        region.makeImmigrant();
+    }
+
+    public CityArea getCityArea(){
+        return cityArea;
     }
 
     /**
@@ -63,6 +75,9 @@ public class MouseMovementTracker extends Pane {
         switchMode(bigSelectionTile, bigPictureTileHandler);
     }
 
+    /**
+     * new hier wegwerken
+     */
     EventHandler<MouseEvent> bigPictureTileHandler = e -> {
         if (bigSelectionTile.isValid()) {
             new BigPictureTile(bigPictureTileType, bigSelectionTile.getR(), bigSelectionTile.getK(), this);
@@ -81,9 +96,6 @@ public class MouseMovementTracker extends Pane {
         }
     };
 
-    /**
-     * fix instanceof
-     */
     public void setSelectionMode() {
         selectionTile.setStroke(Color.WHITE);
         switchMode(selectionTile, e -> {
@@ -106,11 +118,12 @@ public class MouseMovementTracker extends Pane {
     }
 
     EventHandler<MouseEvent> roadPlacer = e -> {
-        roadSelectionTile.invalidated();
-        setTranslateXY(roadSelectionTile, Math.max(Math.min(getR(e), 31), 0), Math.max(Math.min(getK(e), 31), 0));
+        roadSelectionTile.invalidated(this);
+        roadSelectionTile.setFill(roadSelectionTile.getRed());
+        cityArea.setTranslateXY(roadSelectionTile, Math.max(Math.min(getR(e), 31), 0), Math.max(Math.min(getK(e), 31), 0));
 
-        for (RoadSelectionDragTile roadSelectionDragTile : roadSelectionDragTiles) {
-            roadSelectionDragTile.invalidated();
+        for (InvalidationListener roadSelectionDragTile : roadSelectionDragTiles) {
+            roadSelectionDragTile.invalidated(this);
         }
         roadSelectionDragTiles.clear();
     };
@@ -118,15 +131,16 @@ public class MouseMovementTracker extends Pane {
     EventHandler<MouseEvent> roadDragHandler = e -> {
         int r = getR(e);
         int k = getK(e);
-        for (RoadSelectionDragTile roadSelectionDragTile : roadSelectionDragTiles) {
-            getChildren().remove(roadSelectionDragTile);
+        for (InvalidationListener roadSelectionDragTile : roadSelectionDragTiles) {
+            cityArea.getChildren().remove(roadSelectionDragTile);
         }
         roadSelectionDragTiles.clear();
 
         int min = Math.max(Math.min(r, rDrag), 0);
         int max = Math.min(Math.max(r, rDrag), 31);
         for (int i = min + 1; i < max; i++) {
-            roadSelectionDragTiles.add(new RoadSelectionDragTile(i, kDrag, this));
+//            roadSelectionDragTiles.add(new RoadSelectionDragTile(i, kDrag, this));
+            addListener(new RoadSelectionDragTile(i, kDrag, this));
         }
 
         min = Math.max(Math.min(k, kDrag), 0);
@@ -136,7 +150,8 @@ public class MouseMovementTracker extends Pane {
         int factor = Math.abs(Math.abs(Integer.signum(r - rDrag)) - 1);
 
         for (int i = min + factor; i <= max - factor; i++) {
-            roadSelectionDragTiles.add(new RoadSelectionDragTile(r, i, this));
+//            roadSelectionDragTiles.add(new RoadSelectionDragTile(r, i, this));
+            addListener(new RoadSelectionDragTile(r, i, this));
         }
     };
 
@@ -174,5 +189,17 @@ public class MouseMovementTracker extends Pane {
 
     public Map<Pair<Integer, Integer>, RoadTile> getRoadTiles() {
         return roadTiles;
+    }
+
+
+    //is listener patroon hier wel het beste en zo ja verbeteren
+    @Override
+    public void addListener(InvalidationListener invalidationListener) {
+        roadSelectionDragTiles.add(invalidationListener);
+    }
+
+    @Override
+    public void removeListener(InvalidationListener invalidationListener) {
+        roadSelectionDragTiles.remove(invalidationListener);
     }
 }
