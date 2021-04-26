@@ -1,4 +1,4 @@
-package simulatie;
+package simulation;
 
 import polis.MouseMovementTracker;
 

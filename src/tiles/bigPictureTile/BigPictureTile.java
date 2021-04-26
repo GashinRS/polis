@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
 import tiles.RemovableTile;
+import tiles.Tile;
 
 import java.io.InputStream;
 import java.util.List;
@@ -13,41 +14,20 @@ import java.util.List;
  * bug met imageview verwijderen
  */
 
-public class BigPictureTile extends RemovableTile {
+public class BigPictureTile extends Tile implements RemovableTile {
 
     private int imageNumber;
-    private final MouseMovementTracker mouseMovementTracker;
+    private MouseMovementTracker mouseMovementTracker;
     private ImageView imageView;
     private List<Image> images;
     private final String type;
+    private int r;
+    private int k;
 
-    public BigPictureTile(String type, int r, int k, MouseMovementTracker mouseMovementTracker) {
-        super(2, r, k);
+    public BigPictureTile(String type) {
+        super(2);
         this.type=type;
-        this.mouseMovementTracker = mouseMovementTracker;
         imageNumber = 0;
-        try (InputStream in0 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-0.png");
-             InputStream in1 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-1.png");
-             InputStream in2 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-2.png");
-             InputStream in3 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-3.png")) {
-            images = List.of(new Image(in0), new Image(in1), new Image(in2), new Image(in3));
-            imageView = new ImageView(images.get(0));
-            //ivm NPE imageview/vieworder
-            imageView.setMouseTransparent(true);
-
-            upgrade();
-            mouseMovementTracker.getCityArea().getChildren().add(imageView);
-            imageView.setTranslateX(64 * (32 - getR() + getK()));
-            imageView.setTranslateY(64 * (getR() + getK()) / 2);
-            imageView.setViewOrder(-r - k - 2);
-        } catch (Exception ex) {
-            System.err.println("bestand niet gevonden");
-        }
-        mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
-        mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k), this);
-        mouseMovementTracker.getTiles().put(new Pair<>(r, k + 1), this);
-        mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k + 1), this);
-        mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
     }
 
     @Override
@@ -72,14 +52,51 @@ public class BigPictureTile extends RemovableTile {
     }
 
     public boolean isResidence(){
-        return type.equals("residence");
+        return false;
     }
 
     public boolean isCommerce(){
-        return type.equals("commerce");
+        return false;
     }
 
     public boolean isIndustry(){
-        return type.equals("industry");
+        return false;
+    }
+
+    public void setR(int r) {
+        this.r = r;
+    }
+
+    public void setK(int k) {
+        this.k = k;
+    }
+
+    public void setMouseMovementTracker(MouseMovementTracker mouseMovementTracker) {
+        this.mouseMovementTracker = mouseMovementTracker;
+    }
+
+    public void initialize(){
+        try (InputStream in0 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-0.png");
+             InputStream in1 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-1.png");
+             InputStream in2 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-2.png");
+             InputStream in3 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-3.png")) {
+            images = List.of(new Image(in0), new Image(in1), new Image(in2), new Image(in3));
+            imageView = new ImageView(images.get(0));
+            //ivm NPE imageview/vieworder
+            imageView.setMouseTransparent(true);
+
+            upgrade();
+            mouseMovementTracker.getCityArea().getChildren().add(imageView);
+            imageView.setTranslateX(64 * (32 - r + k));
+            imageView.setTranslateY(64 * (r + k) / 2);
+            imageView.setViewOrder(-r - k - 2);
+        } catch (Exception ex) {
+            System.err.println("bestand niet gevonden");
+        }
+        mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
+        mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k), this);
+        mouseMovementTracker.getTiles().put(new Pair<>(r, k + 1), this);
+        mouseMovementTracker.getTiles().put(new Pair<>(r + 1, k + 1), this);
+        mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
     }
 }

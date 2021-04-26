@@ -11,10 +11,9 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-import simulatie.Region;
+import simulation.Region;
 import tiles.*;
-import tiles.bigPictureTile.BigPictureTile;
-import tiles.bigPictureTile.ResidenceTile;
+import tiles.bigPictureTile.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +38,10 @@ public class MouseMovementTracker extends Pane implements Observable {
     private int kDrag;
     private CityArea cityArea;
     private Region region;
-    private static final Map<String, BigPictureTile> bigPictureTileMap = Map.of(
-            "residence", new ResidenceTile(),
-
+    private static final Map<String, BigPictureTileFactory> bigPictureTileFactories = Map.of(
+            "residence", ResidenceTile::new,
+            "commerce", CommerceTile::new,
+            "industry", IndustryTile::new
     );
 
     public MouseMovementTracker() {
@@ -80,7 +80,11 @@ public class MouseMovementTracker extends Pane implements Observable {
      */
     EventHandler<MouseEvent> bigPictureTileHandler = e -> {
         if (bigSelectionTile.isValid()) {
-            new BigPictureTile(bigPictureTileType, bigSelectionTile.getR(), bigSelectionTile.getK(), this);
+            BigPictureTile bigPictureTile = bigPictureTileFactories.get(bigPictureTileType).createBigPictureTile();
+            bigPictureTile.setMouseMovementTracker(this);
+            bigPictureTile.setR(bigSelectionTile.getR());
+            bigPictureTile.setK(bigSelectionTile.getK());
+            bigPictureTile.initialize();
         }
     };
 

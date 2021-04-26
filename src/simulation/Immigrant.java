@@ -1,8 +1,7 @@
-package simulatie;
+package simulation;
 
 import javafx.event.ActionEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import polis.MouseMovementTracker;
 
 public class Immigrant extends Actor{

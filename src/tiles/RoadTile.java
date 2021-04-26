@@ -8,7 +8,7 @@ import polis.MouseMovementTracker;
 import java.io.InputStream;
 import java.util.*;
 
-public class RoadTile extends RemovableTile{
+public class RoadTile extends Tile implements RemovableTile{
 
     //velden zijn protected omdat NonRemovableRoadTile overerft van RoadTile exact hetzelfde doet als RoadTile, met als
     //enige verschil dat het niet verwijderbaar is (methode removeThis doet niets)
@@ -19,7 +19,7 @@ public class RoadTile extends RemovableTile{
     protected MouseMovementTracker mouseMovementTracker;
 
     public RoadTile(int r, int k, MouseMovementTracker mouseMovementTracker) {
-        super(1, r, k);
+        super(1);
         this.r=r;
         this.k=k;
         this.mouseMovementTracker=mouseMovementTracker;
@@ -88,5 +88,9 @@ public class RoadTile extends RemovableTile{
             neighbor.invalidated();
         }
         mouseMovementTracker.getCityArea().getChildren().remove(this);
+    }
+
+    @Override
+    public void upgrade() {
     }
 }
