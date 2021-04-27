@@ -20,7 +20,9 @@ public abstract class Actor extends Circle {
     //0==ZW, 1==NW, 2==NO, 3==ZO
     //extra element 42 aan toegevoegd om nullpointer exception te vermijden en zodat de actor blijft staan
     //als hij geen enkele van de richtingen op kan
-
+    /**
+     * TODO: vervang die 42 best door iets anders dat meer functional is
+     */
     private static final int[][] directions = new int[][] {
             { 0,1,3,2,42}, {0,3,1,2,42}, {1,3,0,2,42}, {1,0,3,2,42}, {3,0,1,2,42}, {3,1,0,2,42}
     };
@@ -36,23 +38,18 @@ public abstract class Actor extends Circle {
     private static final int [] kco = new int[] {0, -1, 0, 1};
     private int direction;
 
-    public Actor(MouseMovementTracker mouseMovementTracker) {
+    public Actor(MouseMovementTracker mouseMovementTracker, int r, int k) {
         super(directionMappings.get(0)[0], directionMappings.get(0)[1], 64/6);
         this.mouseMovementTracker=mouseMovementTracker;
         setViewOrder(-r-k-1.5);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
         direction=0;
-        Timeline timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(250),
-                        this::act)
-        );
-        timeline.play();
-
+        this.r=r;
+        this.k=k;
     }
 
-    public abstract void act(ActionEvent ae);
+    public abstract void act();
+    public abstract boolean isValid();
 
     public void move(){
         int option = RG.nextInt(6);

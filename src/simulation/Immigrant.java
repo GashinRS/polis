@@ -1,20 +1,32 @@
 package simulation;
 
-import javafx.event.ActionEvent;
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
 
-public class Immigrant extends Actor{
+public class Immigrant extends Actor {
 
-    public Immigrant(MouseMovementTracker mouseMovementTracker) {
-        super(mouseMovementTracker);
+    private int age;
+    private final Region region;
+
+    public Immigrant(MouseMovementTracker mouseMovementTracker, int age, Region region) {
+        super(mouseMovementTracker, 0, 14);
         setFill(Color.GREY);
-        setR(0);
-        setK(14);
+        this.age=age;
+        this.region=region;
     }
 
     @Override
-    public void act(ActionEvent ae) {
+    public void act() {
+        age -= 1;
         move();
+    }
+
+    @Override
+    public boolean isValid() {
+        boolean valid = age >= 0;
+        if (!valid){
+            region.slowDown();
+        }
+        return valid;
     }
 }

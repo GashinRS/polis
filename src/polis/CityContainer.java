@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import prog2.util.Viewport;
+import simulation.SimulationEngine;
 
 import java.util.Map;
 
@@ -24,9 +25,10 @@ public class CityContainer extends StackPane {
 
         MouseMovementTracker mouseMovementTracker = new MouseMovementTracker();
         CityArea cityArea = new CityArea(mouseMovementTracker);
+        SimulationEngine simulationEngine = new SimulationEngine(mouseMovementTracker);
 
         CityUI cityUI = new CityUI(mouseMovementTracker);
-        PlayButton playButton = new PlayButton("play.png", "pause.png", 75, 50);
+        PlayButton playButton = new PlayButton("play.png", "pause.png", 75, 50, simulationEngine);
         Insets insets = new Insets(5.0, 5.0, 5.0, 5.0);
         setMargin(cityUI, insets);
         setAlignment(cityUI, Pos.TOP_LEFT);

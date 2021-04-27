@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import simulation.Region;
+import simulation.SimulationEngine;
 import tiles.*;
 import tiles.bigPictureTile.*;
 
@@ -37,7 +38,7 @@ public class MouseMovementTracker extends Pane implements Observable {
     private int rDrag;
     private int kDrag;
     private CityArea cityArea;
-    private Region region;
+//    private Region region;
     private static final Map<String, BigPictureTileFactory> bigPictureTileFactories = Map.of(
             "residence", ResidenceTile::new,
             "commerce", CommerceTile::new,
@@ -53,14 +54,11 @@ public class MouseMovementTracker extends Pane implements Observable {
             int k = Math.max(Math.min(getK(e), 32 - cursorTile.getCellSize()), 0);
             cursorTile.checkValidity(r, k);
         });
-        region = new Region(this);
     }
 
     public void setCityArea(CityArea cityArea){
         this.cityArea=cityArea;
         cityArea.getChildren().addAll(selectionTile, roadSelectionTile, bigSelectionTile);
-        //cityArea.getChildren().add(new Immigrant(this));
-        region.makeImmigrant();
     }
 
     public CityArea getCityArea(){
