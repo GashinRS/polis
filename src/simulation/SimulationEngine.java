@@ -27,7 +27,6 @@ public class SimulationEngine {
         try (InputStream in = SimulationEngine.class.getResourceAsStream("/polis/engine.properties")){
             engineProperties.load(in);
         } catch (IOException ie){
-
             System.err.println("engine properties bestand kon niet gevonden of gelezen worden");
         }
         mouseMovementTracker.setEngineProperties(engineProperties);
@@ -62,7 +61,10 @@ public class SimulationEngine {
         //het tempo zal zo altijd liggen tussen de initial rate en slowest rate
         setTempo(Double.parseDouble(engineProperties.getProperty("region.factor.recovery")));
         if (ticks < 0){
-            region.makeImmigrant();
+            /**
+             * niet vergeten om dit terug toe te voegen als alles werkt
+             */
+            //region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
     }

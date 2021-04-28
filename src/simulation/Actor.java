@@ -117,8 +117,11 @@ public abstract class Actor extends Circle {
         return newActors;
     }
 
-    public void setNewActor(Actor actor){
-        newActors.add(actor);
+    public void setNewActor(Actor newActor){
+        newActors.add(newActor);
+        mouseMovementTracker.getCityArea().getChildren().remove(this);
+        newActor.setHome(getHomeLocation().getKey(), getHomeLocation().getValue(), getHome());
+        home.replaceResident(this, newActor);
     }
 
     public void setHome(int r, int k, BigPictureTile home){
@@ -138,9 +141,6 @@ public abstract class Actor extends Circle {
         return engineProperties;
     }
 
-    public void removeThis(){
-        mouseMovementTracker.getCityArea().getChildren().remove(this);
-    }
 
     public List<BigPictureTile> getLeftAndRightBuildings(){
         int randomInt = RG.nextInt(2);

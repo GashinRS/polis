@@ -22,6 +22,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
 
     private double capacity;
     private double minimalCapcity;
+    private boolean activated;
     private int imageNumber;
     private MouseMovementTracker mouseMovementTracker;
     private ImageView imageView;
@@ -72,6 +73,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         imageView.setX(-0.5 * width);
         imageView.setY(0.5 * width - height);
         imageNumber++;
+        activated = true;
     }
 
     public void downgrade(){
@@ -105,6 +107,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
             imageView.setMouseTransparent(true);
 
             upgrade();
+            activated=false;
             mouseMovementTracker.getCityArea().getChildren().add(imageView);
             imageView.setTranslateX(64 * (32 - r + k));
             imageView.setTranslateY(64 * (r + k) / 2);
@@ -143,7 +146,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
             upgrade();
         } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))){
             upgrade();
-        } else if (actors.size() == 1){
+        } else if (!activated){
             upgrade();
         }
     }
@@ -153,8 +156,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(1)))){
             downgrade();
         } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(3)))){
-            downgrade();
-        } else if (actors.size() == 0){
             downgrade();
         }
     }
@@ -167,6 +168,19 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         return actors;
     }
 
+    public MouseMovementTracker getMouseMovementTracker() {
+        return mouseMovementTracker;
+    }
+
+    public boolean isActivated(){
+        return activated;
+    }
+
     //wordt enkel gebruikt in ResidenceTile
     public void replaceResident(Actor oldResident, Actor newResident){}
+
+    //wordt enkel gebruikt in CommerceTile
+    public boolean canAcceptCustomer(){
+        return false;
+    }
 }

@@ -1,8 +1,6 @@
 package tiles.bigPictureTile;
 
-import polis.MouseMovementTracker;
 import simulation.Actor;
-import tiles.bigPictureTile.BigPictureTile;
 
 public class ResidenceTile extends BigPictureTile {
 

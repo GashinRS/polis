@@ -2,14 +2,15 @@ package simulation;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
+import simulation.Actor;
 
 import java.util.Properties;
 
-public class Worker extends Actor{
-    public Worker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
+public class Customer extends Actor {
+
+    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
         super(mouseMovementTracker, r, k, engineProperties);
-        setFill(Color.TRANSPARENT);
-        setAge(Integer.parseInt(engineProperties.getProperty("worker.age")));
+        setFill(Color.PURPLE);
     }
 
     @Override
@@ -19,6 +20,6 @@ public class Worker extends Actor{
 
     @Override
     public boolean isValid() {
-        return false;
+        return true;
     }
 }

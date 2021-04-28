@@ -3,6 +3,7 @@ package simulation;
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
 import tiles.bigPictureTile.BigPictureTile;
+import tiles.bigPictureTile.CommerceTile;
 
 import java.util.List;
 import java.util.Properties;
@@ -34,17 +35,24 @@ public class JobSeeker extends Actor{
 
     public void checkWorkplaceType(BigPictureTile workplace){
         if (workplace.isCommerce()){
-            setWorkplace(workplace, new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties()));
+            CommerceTile shop = (CommerceTile) workplace;
+            if (!shop.isAtMaxJobCapacity()) {
+                if (!shop.isActivated()){
+                    shop.upgrade();
+                }
+                Trader trader = new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), shop);
+                prepareWork(trader);
+            }
         } else {
-            setWorkplace(workplace, new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties()));
+            Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties());
+            prepareWork(worker);
         }
     }
 
-    public void setWorkplace(BigPictureTile workplace, Actor employee){
-        employee.setHome(getR(), getK(), getHome());
-        workplace.addActor(employee);
+    public void prepareWork(Actor employee){
+        //dit mag niet bij commerce, mss wel bij industry ma dan best daar id constructor fixen
+        //workplace.addActor(employee);
         setNewActor(employee);
-        removeThis();
         getHome().changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.job.found")));
         workFound=true;
     }
@@ -53,6 +61,8 @@ public class JobSeeker extends Actor{
     public boolean isValid() {
         boolean isAgeValid = getAge() > 0;
         if (!isAgeValid){
+            setNewActor(new Sleeper(getMouseMovementTracker(), getHomeLocation().getKey(),
+                    getHomeLocation().getValue(), getEngineProperties()));
             getHome().changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.job.not.found")));
         }
         return isAgeValid && !workFound;
