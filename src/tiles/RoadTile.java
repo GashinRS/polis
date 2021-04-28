@@ -25,7 +25,7 @@ public class RoadTile extends Tile implements RemovableTile{
         this.mouseMovementTracker=mouseMovementTracker;
         setViewOrder(-r -k -1);
         mouseMovementTracker.getRoadTiles().put(new Pair<>(r, k), this);
-        mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
+        //mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
         imageNumber = checkNeighbors();
         for (RoadTile neighbor: neighbors){
@@ -83,7 +83,7 @@ public class RoadTile extends Tile implements RemovableTile{
     @Override
     public void removeThis(){
         mouseMovementTracker.getRoadTiles().remove(new Pair<>(getR(), getK()));
-        mouseMovementTracker.getTiles().remove(new Pair<>(getR(), getK()));
+        mouseMovementTracker.getBuildingTiles().remove(new Pair<>(getR(), getK()));
         for (RoadTile neighbor:neighbors){
             neighbor.invalidated();
         }

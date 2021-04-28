@@ -27,9 +27,9 @@ public class SimulationEngine {
         try (InputStream in = SimulationEngine.class.getResourceAsStream("/polis/engine.properties")){
             properties.load(in);
         } catch (IOException ie){
-            System.err.println("Properties bestand kon niet gevonden of gelezen worden");
+            System.err.println("engine properties bestand kon niet gevonden of gelezen worden");
         }
-        int duration = 250;
+        mouseMovementTracker.setEngineProperties(properties);
         actors = new ArrayList<>();
         region = new Region(mouseMovementTracker, Integer.parseInt(properties.getProperty("immigrant.age")),
                 this, Double.parseDouble(properties.getProperty("region.factor.slow.down")));
@@ -39,7 +39,7 @@ public class SimulationEngine {
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(duration),
+                new KeyFrame(Duration.millis(250),
                         this::eachTick)
         );
     }
@@ -48,10 +48,11 @@ public class SimulationEngine {
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()){
             Actor actor = iterator.next();;
-            actor.act();
             if (!actor.isValid()){
                 iterator.remove();
                 mouseMovementTracker.getCityArea().getChildren().remove(actor);
+            } else {
+                actor.act();
             }
         }
         ticks -= 1;
@@ -83,5 +84,6 @@ public class SimulationEngine {
         actors.add(actor);
         mouseMovementTracker.getCityArea().getChildren().add(actor);
     }
+
 
 }

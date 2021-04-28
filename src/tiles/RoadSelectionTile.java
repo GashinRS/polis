@@ -25,7 +25,8 @@ public class RoadSelectionTile extends CursorTile implements InvalidationListene
     @Override
     public void checkValidity(int r, int k){
         super.checkValidity(r, k);
-        if (getMouseMovementTracker().getTiles().get(new Pair<>(r, k)) == null){
+        if (getMouseMovementTracker().getBuildingTiles().get(new Pair<>(r, k)) == null &&
+            getMouseMovementTracker().getRoadTiles().get(new Pair<>(r, k)) == null){
             color = getBlue();
         } else {
             color = getRed();

@@ -16,6 +16,10 @@ import java.util.Map;
  * Dit is de hoofdcontainer waarin alle andere containers en nodes zitten.
  */
 
+/**
+ * TODO mousemovementracker maken met city area en niet omgekeerd
+ */
+
 public class CityContainer extends StackPane {
 
     public CityContainer(){

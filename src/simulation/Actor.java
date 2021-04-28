@@ -23,11 +23,18 @@ public abstract class Actor extends Circle {
     /**
      * TODO: vervang die 42 best door iets anders dat meer functional is
      */
-    private static final int[][] directions = new int[][] {
+    private static final int[][] DIRECTIONS = new int[][] {
             { 0,1,3,2,42}, {0,3,1,2,42}, {1,3,0,2,42}, {1,0,3,2,42}, {3,0,1,2,42}, {3,1,0,2,42}
     };
+    //wordt gebruikt om random rechts of links te bepalen afhankelijk van de richting van de actor
+//    private static final int[][][] LEFTRIGHT = new int[][][] {
+//            {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}
+//    };
+    private static final int[][][] LEFTRIGHT = new int[][][] {
+            {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}
+    };
 
-    private static final Map<Integer, Integer[]> directionMappings = Map.of(
+    private static final Map<Integer, Integer[]> DIRECTION_MAPPINGS = Map.of(
             0, new Integer[] {-64/4, 64/3}, //ZW
             1, new Integer[] {64/4, 64/3}, //NW
             2, new Integer[] {64/4, 2*(64/3)}, //NO
@@ -39,7 +46,7 @@ public abstract class Actor extends Circle {
     private int direction;
 
     public Actor(MouseMovementTracker mouseMovementTracker, int r, int k) {
-        super(directionMappings.get(0)[0], directionMappings.get(0)[1], 64/6);
+        super(DIRECTION_MAPPINGS.get(0)[0], DIRECTION_MAPPINGS.get(0)[1], 64/6);
         this.mouseMovementTracker=mouseMovementTracker;
         setViewOrder(-r-k-1.5);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
@@ -49,16 +56,17 @@ public abstract class Actor extends Circle {
     }
 
     public abstract void act();
+    //public abstract boolean destinationReached();
     public abstract boolean isValid();
 
     public void move(){
         int option = RG.nextInt(6);
         int index = 0;
-        int newDirection = (direction + directions[option][index]) % 4;
+        int newDirection = (direction + DIRECTIONS[option][index]) % 4;
         while (mouseMovementTracker.getRoadTiles().get(new Pair<>(r+rco[newDirection], k+kco[newDirection])) == null &&
         index < 4){
             index++;
-            newDirection = (direction + directions[option][index]) % 4;
+            newDirection = (direction + DIRECTIONS[option][index]) % 4;
         }
         if (index < 4){
             direction = newDirection;
@@ -66,8 +74,8 @@ public abstract class Actor extends Circle {
             k=k+kco[newDirection];
             mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
             setViewOrder(-r-k-1.5);
-            setCenterX(directionMappings.get(direction)[0]);
-            setCenterY(directionMappings.get(direction)[1]);
+            setCenterX(DIRECTION_MAPPINGS.get(direction)[0]);
+            setCenterY(DIRECTION_MAPPINGS.get(direction)[1]);
         }
 
     }
@@ -88,5 +96,20 @@ public abstract class Actor extends Circle {
         return k;
     }
 
+    public int getDirection(){
+        return direction;
+    }
+
+    public int[][][] getLeftright(){
+        return LEFTRIGHT;
+    }
+
+    public int getRandomLeftRight(){
+        return RG.nextInt(2);
+    }
+
+    public MouseMovementTracker getMouseMovementTracker(){
+        return mouseMovementTracker;
+    }
 
 }
