@@ -18,7 +18,7 @@ import java.util.Map;
  * TODO: refractoren naar BuildingTile
  */
 
-public class BigPictureTile extends Tile implements RemovableTile {
+public abstract class BigPictureTile extends Tile implements RemovableTile {
 
     private double capacity;
     private double minimalCapcity;
@@ -27,7 +27,7 @@ public class BigPictureTile extends Tile implements RemovableTile {
     private ImageView imageView;
     private List<Image> images;
     private final String type;
-    private List<Actor> actors = new ArrayList<>();
+    private final List<Actor> actors = new ArrayList<>();
     private static final Map<String, String> INITIAL_CAPACITIES = Map.of(
             "residence", "residential.capacity.initial",
             "commerce", "commercial.capacity.initial",
@@ -122,8 +122,8 @@ public class BigPictureTile extends Tile implements RemovableTile {
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
     }
 
-    public void setCapacity(int capacity){
-        this.capacity=capacity;
+    public void changeCapacity(double factor){
+        capacity = Math.max(minimalCapcity, capacity*factor);
     }
 
     public double getCapacity(){
@@ -139,7 +139,6 @@ public class BigPictureTile extends Tile implements RemovableTile {
      */
     public void addActor(Actor actor){
         actors.add(actor);
-        //System.out.println(Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0))));
         if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0)))){
             upgrade();
         } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))){
@@ -163,4 +162,11 @@ public class BigPictureTile extends Tile implements RemovableTile {
     public boolean isAtMaxCapacity(){
         return actors.size() >= capacity;
     }
+
+    public List<Actor> getActors(){
+        return actors;
+    }
+
+    //wordt enkel gebruikt in ResidenceTile
+    public void replaceResident(Actor oldResident, Actor newResident){}
 }

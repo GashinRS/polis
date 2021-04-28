@@ -18,23 +18,23 @@ public class SimulationEngine {
     private final Timeline timeline;
     private int ticks;
     private double tempo;
-    private final Properties properties;
+    private final Properties engineProperties;
     private final MouseMovementTracker mouseMovementTracker;
 
     public SimulationEngine(MouseMovementTracker mouseMovementTracker) {
         this.mouseMovementTracker=mouseMovementTracker;
-        properties = new Properties();
+        engineProperties = new Properties();
         try (InputStream in = SimulationEngine.class.getResourceAsStream("/polis/engine.properties")){
-            properties.load(in);
+            engineProperties.load(in);
         } catch (IOException ie){
+
             System.err.println("engine properties bestand kon niet gevonden of gelezen worden");
         }
-        mouseMovementTracker.setEngineProperties(properties);
+        mouseMovementTracker.setEngineProperties(engineProperties);
         actors = new ArrayList<>();
-        region = new Region(mouseMovementTracker, Integer.parseInt(properties.getProperty("immigrant.age")),
-                this, Double.parseDouble(properties.getProperty("region.factor.slow.down")));
+        region = new Region(mouseMovementTracker, this);
         region.makeImmigrant();
-        tempo = Integer.parseInt(properties.getProperty("region.initial.rate"));
+        tempo = Integer.parseInt(engineProperties.getProperty("region.initial.rate"));
         ticks = RG.nextInt( (int) tempo);
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -45,25 +45,26 @@ public class SimulationEngine {
     }
 
     public void eachTick(ActionEvent ae){
+        List<Actor> newActors = new ArrayList<>();
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()){
             Actor actor = iterator.next();;
             if (!actor.isValid()){
                 iterator.remove();
                 mouseMovementTracker.getCityArea().getChildren().remove(actor);
+                newActors.addAll(actor.getNewActor());
             } else {
                 actor.act();
             }
         }
+        actors.addAll(newActors);
         ticks -= 1;
         //het tempo zal zo altijd liggen tussen de initial rate en slowest rate
-        setTempo(Double.parseDouble(properties.getProperty("region.factor.recovery")));
-        System.out.println(tempo);
+        setTempo(Double.parseDouble(engineProperties.getProperty("region.factor.recovery")));
         if (ticks < 0){
             region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
-        //er moet nog iets toevoegd worden zodat actors die toegevoegd worden tijdens de iteratie niet ook hun act uitvoeren
     }
 
     public void play(){
@@ -76,13 +77,16 @@ public class SimulationEngine {
 
     public void setTempo(double factor){
         tempo = Math.min(Math.max(tempo * factor,
-                Integer.parseInt(properties.getProperty("region.initial.rate"))),
-                Integer.parseInt(properties.getProperty("region.slowest.rate")));
+                Integer.parseInt(engineProperties.getProperty("region.initial.rate"))),
+                Integer.parseInt(engineProperties.getProperty("region.slowest.rate")));
     }
 
     public void addActor(Actor actor){
         actors.add(actor);
-        mouseMovementTracker.getCityArea().getChildren().add(actor);
+    }
+
+    public Properties getEngineProperties(){
+        return engineProperties;
     }
 
 

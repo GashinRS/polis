@@ -5,8 +5,8 @@ import polis.MouseMovementTracker;
 
 public abstract class CursorTile extends Tile {
 
-    private static final Color blue = Color.rgb(90, 155,255, 0.5);
-    private static final Color red = Color.rgb(225, 40,70, 0.5);
+    private static final Color BLUE = Color.rgb(90, 155,255, 0.5);
+    private static final Color RED = Color.rgb(225, 40,70, 0.5);
     private final MouseMovementTracker mouseMovementTracker;
     private int r;
     private int k;
@@ -31,11 +31,11 @@ public abstract class CursorTile extends Tile {
     }
 
     public Color getBlue(){
-        return blue;
+        return BLUE;
     }
 
     public Color getRed(){
-        return red;
+        return RED;
     }
 
     public MouseMovementTracker getMouseMovementTracker(){

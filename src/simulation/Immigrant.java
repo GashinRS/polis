@@ -6,45 +6,51 @@ import polis.MouseMovementTracker;
 import tiles.RemovableTile;
 import tiles.bigPictureTile.BigPictureTile;
 
+import java.util.List;
+import java.util.Properties;
+
 public class Immigrant extends Actor {
 
-    private int age;
     private final Region region;
     private boolean residenceFound;
 
-    public Immigrant(MouseMovementTracker mouseMovementTracker, int age, Region region) {
-        super(mouseMovementTracker, 0, 14);
+    public Immigrant(MouseMovementTracker mouseMovementTracker, int age, Region region, Properties engineProperties) {
+        super(mouseMovementTracker, 0, 14, engineProperties);
         setFill(Color.GREY);
-        this.age=age;
+        setAge(age);
         this.region=region;
     }
 
     @Override
     public void act() {
-        int leftRight = getRandomLeftRight();
-        BigPictureTile buildingTile1 = getMouseMovementTracker().getBuildingTiles().
-                get(new Pair<>(getR()+getLeftright()[getDirection()][leftRight][0], getK()+getLeftright()[getDirection()][leftRight][1]));
-        BigPictureTile buildingTile2 = getMouseMovementTracker().getBuildingTiles().
-                get(new Pair<>(getR()+getLeftright()[getDirection()][leftRight][2], getK()+getLeftright()[getDirection()][leftRight][3]));
+        List<BigPictureTile> leftAndRightBuildings = getLeftAndRightBuildings();
+        BigPictureTile buildingTile1 = leftAndRightBuildings.get(0);
+        BigPictureTile buildingTile2 = leftAndRightBuildings.get(1);
         if ( buildingTile1 != null && buildingTile1.isResidence() && !buildingTile1.isAtMaxCapacity()){
-            buildingTile1.addActor(this);
-            residenceFound=true;
+            setResidence(buildingTile1);
         } else if (buildingTile2 != null && buildingTile2.isResidence() && !buildingTile2.isAtMaxCapacity()){
-            buildingTile2.addActor(this);
-            residenceFound=true;
+            setResidence(buildingTile2);
         } else {
             move();
-            age -= 1;
+            setAge(getAge()-1);
         }
+    }
+
+    public void setResidence(BigPictureTile residence){
+        Sleeper sleeper = new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), residence);
+        residence.addActor(sleeper);
+        setNewActor(sleeper);
+        removeThis();
+        residenceFound=true;
     }
 
 
     @Override
     public boolean isValid() {
-        boolean valid = age > 0;
-        if (!valid){
+        boolean isAgeValid = getAge() > 0;
+        if (!isAgeValid){
             region.slowDown();
         }
-        return valid && !residenceFound;
+        return isAgeValid && !residenceFound;
     }
 }

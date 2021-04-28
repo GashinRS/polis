@@ -1,21 +1,24 @@
 package simulation;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
+import tiles.bigPictureTile.BigPictureTile;
 
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public abstract class Actor extends Circle {
 
     private final MouseMovementTracker mouseMovementTracker;
     private int r;
     private int k;
+    private int age;
+    private Pair<Integer, Integer> homeLocation;
+    private final Properties engineProperties;
+    private BigPictureTile home;
+    //deze lijst zal de actor bevatten waarin de huidige actor verandert, wanneer de verandering plaatsvindt
+    private final List<Actor> newActors = new ArrayList<>();
     private static final Random RG = new Random();
     //0==ZW, 1==NW, 2==NO, 3==ZO
     //extra element 42 aan toegevoegd om nullpointer exception te vermijden en zodat de actor blijft staan
@@ -27,9 +30,6 @@ public abstract class Actor extends Circle {
             { 0,1,3,2,42}, {0,3,1,2,42}, {1,3,0,2,42}, {1,0,3,2,42}, {3,0,1,2,42}, {3,1,0,2,42}
     };
     //wordt gebruikt om random rechts of links te bepalen afhankelijk van de richting van de actor
-//    private static final int[][][] LEFTRIGHT = new int[][][] {
-//            {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}
-//    };
     private static final int[][][] LEFTRIGHT = new int[][][] {
             {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}
     };
@@ -45,18 +45,23 @@ public abstract class Actor extends Circle {
     private static final int [] kco = new int[] {0, -1, 0, 1};
     private int direction;
 
-    public Actor(MouseMovementTracker mouseMovementTracker, int r, int k) {
+    public Actor(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
         super(DIRECTION_MAPPINGS.get(0)[0], DIRECTION_MAPPINGS.get(0)[1], 64/6);
         this.mouseMovementTracker=mouseMovementTracker;
+        this.engineProperties=engineProperties;
         setViewOrder(-r-k-1.5);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
+        mouseMovementTracker.getCityArea().getChildren().add(this);
         direction=0;
         this.r=r;
         this.k=k;
     }
 
     public abstract void act();
-    //public abstract boolean destinationReached();
+
+    /**
+     * Deze methode wordt gebruikt door de simulatiemotor om te kijken of de actor verwijderd moet worden
+     */
     public abstract boolean isValid();
 
     public void move(){
@@ -96,20 +101,54 @@ public abstract class Actor extends Circle {
         return k;
     }
 
-    public int getDirection(){
-        return direction;
+    public int getAge() {
+        return age;
     }
 
-    public int[][][] getLeftright(){
-        return LEFTRIGHT;
-    }
-
-    public int getRandomLeftRight(){
-        return RG.nextInt(2);
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public MouseMovementTracker getMouseMovementTracker(){
         return mouseMovementTracker;
     }
 
+    public List<Actor> getNewActor() {
+        return newActors;
+    }
+
+    public void setNewActor(Actor actor){
+        newActors.add(actor);
+    }
+
+    public void setHome(int r, int k, BigPictureTile home){
+        homeLocation = new Pair<>(r, k);
+        this.home=home;
+    }
+
+    public BigPictureTile getHome(){
+        return home;
+    }
+
+    public Pair<Integer, Integer> getHomeLocation(){
+        return homeLocation;
+    }
+
+    public Properties getEngineProperties(){
+        return engineProperties;
+    }
+
+    public void removeThis(){
+        mouseMovementTracker.getCityArea().getChildren().remove(this);
+    }
+
+    public List<BigPictureTile> getLeftAndRightBuildings(){
+        int randomInt = RG.nextInt(2);
+        List<BigPictureTile> buildingTiles = new ArrayList<>();
+        buildingTiles.add(mouseMovementTracker.getBuildingTiles().get(new Pair<>(r+LEFTRIGHT[direction][randomInt][0],
+                k+LEFTRIGHT[direction][randomInt][1])));
+        buildingTiles.add(mouseMovementTracker.getBuildingTiles().get(new Pair<>(r+LEFTRIGHT[direction][randomInt][2],
+                k+LEFTRIGHT[direction][randomInt][3])));
+        return buildingTiles;
+    }
 }
