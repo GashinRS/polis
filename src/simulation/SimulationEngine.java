@@ -44,7 +44,6 @@ public class SimulationEngine {
     }
 
     public void eachTick(ActionEvent ae){
-        //List<Actor> newActors = new ArrayList<>();
         Set<Actor> newActors = new HashSet<>();
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()){
@@ -66,7 +65,7 @@ public class SimulationEngine {
             /**
              * niet vergeten om dit terug toe te voegen als alles werkt
              */
-            region.makeImmigrant();
+            //region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
     }

@@ -14,8 +14,8 @@ public class Goods extends Actor {
     private final BigPictureTile origin;
     private boolean shopFound;
 
-    public Goods(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile origin) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Goods(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile origin, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         this.origin=origin;
         setAge(Integer.parseInt(engineProperties.getProperty("goods.age")));
         setFill(Color.YELLOW);

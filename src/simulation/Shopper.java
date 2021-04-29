@@ -11,8 +11,8 @@ public class Shopper extends Actor {
 
     private boolean shoppingPlaceFound;
 
-    public Shopper(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Shopper(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         setFill(Color.LIGHTBLUE);
         setAge(Integer.parseInt(engineProperties.getProperty("shopper.age")));
     }
@@ -33,7 +33,7 @@ public class Shopper extends Actor {
 
     public void checkIfShopperCanBecomeCustomer(BigPictureTile buildingTile){
         if (buildingTile.canAcceptCustomer()){
-            Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), buildingTile);
+            Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), buildingTile, getDirection());
             setNewActor(customer);
             shoppingPlaceFound = true;
             buildingTile.addActor(this);
@@ -52,7 +52,7 @@ public class Shopper extends Actor {
         boolean isAgeValid = getAge() > 0;
         if (!isAgeValid){
             setNewActor(new Sleeper(getMouseMovementTracker(), getHomeLocation().getKey(),
-                    getHomeLocation().getValue(), getEngineProperties()));
+                    getHomeLocation().getValue(), getEngineProperties(), getDirection()));
             getHome().changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.shop.not.found")));
         }
         return getAge() > 0 && !shoppingPlaceFound;

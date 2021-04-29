@@ -12,8 +12,8 @@ public class JobSeeker extends Actor{
 
     private boolean workFound;
 
-    public JobSeeker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public JobSeeker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         setFill(Color.PERU);
         setAge(Integer.parseInt(engineProperties.getProperty("jobseeker.age")));
     }
@@ -39,7 +39,7 @@ public class JobSeeker extends Actor{
                 if (!shop.isActivated()){
                     shop.activate();
                 }
-                Trader trader = new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), shop);
+                Trader trader = new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), shop, getDirection());
                 prepareWork(trader);
             } else {
                 continueSearching();
@@ -49,7 +49,7 @@ public class JobSeeker extends Actor{
                 if (!workplace.isActivated()){
                     workplace.activate();
                 }
-                Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace);
+                Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace, getDirection());
                 workplace.addActor(worker);
                 prepareWork(worker);
             } else {
@@ -71,7 +71,7 @@ public class JobSeeker extends Actor{
         boolean isAgeValid = getAge() > 0;
         if (!isAgeValid){
             setNewActor(new Sleeper(getMouseMovementTracker(), getHomeLocation().getKey(),
-                    getHomeLocation().getValue(), getEngineProperties()));
+                    getHomeLocation().getValue(), getEngineProperties(), getDirection()));
             getHome().changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.job.not.found")));
         }
         return isAgeValid && !workFound;

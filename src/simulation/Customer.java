@@ -12,8 +12,8 @@ public class Customer extends Actor {
 
     private final BigPictureTile shop;
 
-    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile shop) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile shop, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         setFill(Color.TRANSPARENT);
         this.shop=shop;
         setAge(Integer.parseInt(engineProperties.getProperty("customer.age")));
@@ -29,7 +29,7 @@ public class Customer extends Actor {
         boolean isAgeValid = getAge() > 0;
         if (!isAgeValid){
             shop.removeActor(this);
-            setNewActor(new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties()));
+            setNewActor(new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), getDirection()));
         }
         return isAgeValid;
     }

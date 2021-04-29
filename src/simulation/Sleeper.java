@@ -9,8 +9,8 @@ import java.util.Properties;
 public class Sleeper extends Actor{
 
 
-    public Sleeper(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Sleeper(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         setAge(Integer.parseInt(engineProperties.getProperty("sleeper.age")));
         setFill(Color.TRANSPARENT);
     }
@@ -19,7 +19,7 @@ public class Sleeper extends Actor{
     public void act() {
         setAge(getAge()-1);
         if (getAge() == 0){
-            setNewActor(new JobSeeker(getMouseMovementTracker(), getR(), getK(), getEngineProperties()));
+            setNewActor(new JobSeeker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), getDirection()));
         }
     }
 

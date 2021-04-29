@@ -10,8 +10,8 @@ public class Worker extends Actor{
 
     private final BigPictureTile workplace;
 
-    public Worker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile workplace) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Worker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile workplace, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         this.workplace = workplace;
         setFill(Color.TRANSPARENT);
         setAge(Integer.parseInt(engineProperties.getProperty("worker.age")));
@@ -21,7 +21,7 @@ public class Worker extends Actor{
     public void act() {
         setAge(getAge()-1);
         if (getAge() % Integer.parseInt(getEngineProperties().getProperty("steps.per.goods")) == 0){
-            getNewActor().add(new Goods(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace));
+            getNewActor().add(new Goods(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace, getDirection()));
         }
     }
 
@@ -31,7 +31,7 @@ public class Worker extends Actor{
         if (!isAgeValid) {
             workplace.removeActor(this);
             Shopper shopper = new Shopper(getMouseMovementTracker(), getHomeLocation().getKey(),
-                    getHomeLocation().getValue(), getEngineProperties());
+                    getHomeLocation().getValue(), getEngineProperties(), getDirection());
             setNewActor(shopper);
         }
         return isAgeValid;

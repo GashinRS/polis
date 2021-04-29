@@ -10,8 +10,8 @@ public class Trader extends Actor{
 
     private final CommerceTile shop;
 
-    public Trader(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, CommerceTile shop) {
-        super(mouseMovementTracker, r, k, engineProperties);
+    public Trader(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, CommerceTile shop, int direction) {
+        super(mouseMovementTracker, r, k, engineProperties, direction);
         this.shop=shop;
         shop.addTrader(this);
         setFill(Color.TRANSPARENT);
@@ -29,7 +29,7 @@ public class Trader extends Actor{
         if (!isAgeValid){
             shop.removeTrader(this);
             Shopper shopper = new Shopper(getMouseMovementTracker(), getHomeLocation().getKey(),
-                    getHomeLocation().getValue(), getEngineProperties());
+                    getHomeLocation().getValue(), getEngineProperties(), getDirection());
             setNewActor(shopper);
         }
         return isAgeValid;

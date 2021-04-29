@@ -45,14 +45,14 @@ public abstract class Actor extends Circle {
     private static final int [] kco = new int[] {0, -1, 0, 1};
     private int direction;
 
-    public Actor(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
-        super(DIRECTION_MAPPINGS.get(0)[0], DIRECTION_MAPPINGS.get(0)[1], 64/6);
+    public Actor(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, int direction) {
+        super(DIRECTION_MAPPINGS.get(direction)[0], DIRECTION_MAPPINGS.get(direction)[1], 64/6);
         this.mouseMovementTracker=mouseMovementTracker;
         this.engineProperties=engineProperties;
         setViewOrder(-r-k-1.5);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
         mouseMovementTracker.getCityArea().getChildren().add(this);
-        direction=0;
+        this.direction=direction;
         this.r=r;
         this.k=k;
     }
@@ -67,6 +67,7 @@ public abstract class Actor extends Circle {
      * Deze methode wordt gebruikt door de simulatiemotor om te kijken of de actor verwijderd moet worden
      */
     public abstract boolean isValid();
+
 
     public void move(){
         int option = RG.nextInt(6);
@@ -125,9 +126,7 @@ public abstract class Actor extends Circle {
         newActors.add(newActor);
         mouseMovementTracker.getCityArea().getChildren().remove(this);
         newActor.setHome(getHomeLocation().getKey(), getHomeLocation().getValue(), getHome());
-        //home.replaceResident(this, newActor);
-        home.addActor(newActor);
-        home.removeActor(this);
+        home.getActors().set(home.getActors().indexOf(this), newActor);
     }
 
     public void setHome(int r, int k, BigPictureTile home){
