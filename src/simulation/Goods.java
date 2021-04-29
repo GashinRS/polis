@@ -39,7 +39,7 @@ public class Goods extends Actor {
         CommerceTile shop = (CommerceTile) buildingTile;
         if (!shop.isAtMaxGoodsCapacity()){
             if (!shop.isActivated()){
-                shop.upgrade();
+                shop.activate();
             }
             shop.addGoods(this);
             shopFound = true;

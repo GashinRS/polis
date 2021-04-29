@@ -13,9 +13,5 @@ public class ResidenceTile extends BigPictureTile {
         return true;
     }
 
-    @Override
-    public void replaceResident(Actor oldResident, Actor newResident) {
-        getActors().remove(oldResident);
-        getActors().add(newResident);
-    }
+
 }

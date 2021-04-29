@@ -42,11 +42,17 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
             "commerce", List.of("commercial.level1to2", "commercial.level2to1", "commercial.level2to3", "commercial.level3to2"),
             "industry", List.of("industrial.level1to2", "industrial.level2to1", "industrial.level2to3", "industrial.level3to2")
     );
+    private double[] upgradeThresholds;
+    private double[] downgradeThresholds;
+    private double upgradeThreshold;
+    private double downgradeThreshold;
+    private int level;
 
     public BigPictureTile(String type) {
         super(2);
         this.type=type;
         imageNumber = 0;
+        level=0;
     }
 
     @Override
@@ -66,20 +72,23 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
      */
 
     public void upgrade() {
-        imageView.setImage(images.get(imageNumber % 4));
-        double width = images.get(imageNumber % 4).getWidth();
-        double height = images.get(imageNumber % 4).getHeight();
-        imageView.setImage(images.get(imageNumber % 4));
+        imageView.setImage(images.get(level));
+        double width = images.get(level).getWidth();
+        double height = images.get(level).getHeight();
+        imageView.setImage(images.get(level));
         imageView.setX(-0.5 * width);
         imageView.setY(0.5 * width - height);
-        imageNumber++;
         activated = true;
     }
 
     public void downgrade(){
-        imageNumber -= 2;
+        level -= 1;
         upgrade();
-        imageNumber++;
+    }
+
+    public void activate(){
+        level = 1;
+        upgrade();
     }
 
     public boolean isResidence(){
@@ -123,10 +132,27 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         mouseMovementTracker.getBuildingTiles().put(new Pair<>(r, k + 1), this);
         mouseMovementTracker.getBuildingTiles().put(new Pair<>(r + 1, k + 1), this);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
+        upgradeThresholds = new double[] {Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0))),
+                Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2))),
+        Double.POSITIVE_INFINITY};
+        downgradeThresholds = new double[] {Double.NEGATIVE_INFINITY, Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(1))),
+                Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(3)))};
+        upgradeThreshold = upgradeThresholds[0];
+        downgradeThreshold = downgradeThresholds[0];
     }
 
     public void changeCapacity(double factor){
         capacity = Math.max(minimalCapcity, capacity*factor);
+        if (capacity >= upgradeThreshold){
+            upgradeThreshold = upgradeThresholds[level];
+            downgradeThreshold = downgradeThresholds[level];
+            level++;
+            upgrade();
+        } else if (capacity < downgradeThreshold){
+            downgrade();
+            downgradeThreshold = downgradeThresholds[level-1];
+            upgradeThreshold = upgradeThresholds[level-1];
+        }
     }
 
     public double getCapacity(){
@@ -139,20 +165,10 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
 
     public void addActor(Actor actor){
         actors.add(actor);
-        if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0)))){
-            upgrade();
-        } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))) {
-            upgrade();
-        }
     }
 
     public void removeActor(Actor actor){
         actors.remove(actor);
-        if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(1)))){
-            downgrade();
-        } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(3)))){
-            downgrade();
-        }
     }
 
     public boolean isAtMaxCapacity(){
@@ -170,9 +186,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
     public boolean isActivated(){
         return activated;
     }
-
-    //wordt enkel gebruikt in ResidenceTile
-    public void replaceResident(Actor oldResident, Actor newResident){}
 
     //wordt enkel gebruikt in CommerceTile
     public boolean canAcceptCustomer(){

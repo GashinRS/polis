@@ -38,7 +38,7 @@ public class Immigrant extends Actor {
     public void setResidence(BigPictureTile residence){
         Sleeper sleeper = new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties());
         if (!residence.isActivated()){
-            residence.upgrade();
+            residence.activate();
         }
         residence.addActor(sleeper);
         setHome(getR(), getK(), residence);

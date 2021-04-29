@@ -57,6 +57,10 @@ public abstract class Actor extends Circle {
         this.k=k;
     }
 
+    public int getDirection(){
+        return direction;
+    }
+
     public abstract void act();
 
     /**
@@ -121,7 +125,9 @@ public abstract class Actor extends Circle {
         newActors.add(newActor);
         mouseMovementTracker.getCityArea().getChildren().remove(this);
         newActor.setHome(getHomeLocation().getKey(), getHomeLocation().getValue(), getHome());
-        home.replaceResident(this, newActor);
+        //home.replaceResident(this, newActor);
+        home.addActor(newActor);
+        home.removeActor(this);
     }
 
     public void setHome(int r, int k, BigPictureTile home){

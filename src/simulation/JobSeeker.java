@@ -37,7 +37,7 @@ public class JobSeeker extends Actor{
             CommerceTile shop = (CommerceTile) workplace;
             if (!shop.isAtMaxJobCapacity()) {
                 if (!shop.isActivated()){
-                    shop.upgrade();
+                    shop.activate();
                 }
                 Trader trader = new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), shop);
                 prepareWork(trader);
@@ -47,7 +47,7 @@ public class JobSeeker extends Actor{
         } else {
             if (!workplace.isAtMaxCapacity()){
                 if (!workplace.isActivated()){
-                    workplace.upgrade();
+                    workplace.activate();
                 }
                 Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace);
                 workplace.addActor(worker);
