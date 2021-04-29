@@ -151,4 +151,9 @@ public abstract class Actor extends Circle {
                 k+LEFTRIGHT[direction][randomInt][3])));
         return buildingTiles;
     }
+
+    public void continueSearching(){
+        move();
+        age -= 1;
+    }
 }

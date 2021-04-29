@@ -31,13 +31,15 @@ public class Immigrant extends Actor {
         } else if (buildingTile2 != null && buildingTile2.isResidence() && !buildingTile2.isAtMaxCapacity()){
             setResidence(buildingTile2);
         } else {
-            move();
-            setAge(getAge()-1);
+            continueSearching();
         }
     }
 
     public void setResidence(BigPictureTile residence){
         Sleeper sleeper = new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties());
+        if (!residence.isActivated()){
+            residence.upgrade();
+        }
         residence.addActor(sleeper);
         setHome(getR(), getK(), residence);
         setNewActor(sleeper);

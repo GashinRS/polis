@@ -48,10 +48,10 @@ public class Shopper extends Actor {
         }
     }
 
-    public void continueSearching(){
-        move();
-        setAge(getAge()-1);
-    }
+//    public void continueSearching(){
+//        move();
+//        setAge(getAge()-1);
+//    }
 
     @Override
     public boolean isValid() {

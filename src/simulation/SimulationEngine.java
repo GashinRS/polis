@@ -44,17 +44,19 @@ public class SimulationEngine {
     }
 
     public void eachTick(ActionEvent ae){
-        List<Actor> newActors = new ArrayList<>();
+        //List<Actor> newActors = new ArrayList<>();
+        Set<Actor> newActors = new HashSet<>();
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()){
-            Actor actor = iterator.next();;
+            Actor actor = iterator.next();
+            actor.getNewActor().clear();
             if (!actor.isValid()){
                 iterator.remove();
                 mouseMovementTracker.getCityArea().getChildren().remove(actor);
-                newActors.addAll(actor.getNewActor());
             } else {
                 actor.act();
             }
+            newActors.addAll(actor.getNewActor());
         }
         actors.addAll(newActors);
         ticks -= 1;

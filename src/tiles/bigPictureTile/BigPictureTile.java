@@ -144,11 +144,12 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         actors.add(actor);
         if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0)))){
             upgrade();
-        } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))){
-            upgrade();
-        } else if (!activated){
+        } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))) {
             upgrade();
         }
+//        } else if (!activated){
+//            upgrade();
+//        }
     }
 
     public void removeActor(Actor actor){

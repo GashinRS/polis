@@ -28,8 +28,7 @@ public class JobSeeker extends Actor{
         } else if (buildingTile2 != null && !buildingTile2.isResidence() && !buildingTile2.isAtMaxCapacity()){
             checkWorkplaceType(buildingTile2);
         } else {
-            move();
-            setAge(getAge()-1);
+            continueSearching();
         }
     }
 
@@ -42,10 +41,20 @@ public class JobSeeker extends Actor{
                 }
                 Trader trader = new Trader(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), shop);
                 prepareWork(trader);
+            } else {
+                continueSearching();
             }
         } else {
-            Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties());
-            prepareWork(worker);
+            if (!workplace.isAtMaxCapacity()){
+                if (!workplace.isActivated()){
+                    workplace.upgrade();
+                }
+                Worker worker = new Worker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace);
+                workplace.addActor(worker);
+                prepareWork(worker);
+            } else {
+                continueSearching();
+            }
         }
     }
 
