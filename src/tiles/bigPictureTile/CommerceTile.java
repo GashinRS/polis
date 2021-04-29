@@ -1,6 +1,7 @@
 package tiles.bigPictureTile;
 
 import polis.MouseMovementTracker;
+import simulation.Actor;
 import simulation.Goods;
 import simulation.Trader;
 
@@ -15,6 +16,7 @@ public class CommerceTile extends BigPictureTile {
     private double goodsCapacity;
     private final List<Trader> traders = new ArrayList<>();
     private final List<Goods> goods = new ArrayList<>();
+    private int reservedGoods;
 
     public CommerceTile() {
         super("commerce");
@@ -50,8 +52,8 @@ public class CommerceTile extends BigPictureTile {
         this.goods.add(goods);
     }
 
-    public void removeGoods(Goods goods){
-        this.goods.remove(goods);
+    public void removeGoods(){
+        this.goods.remove(0);
     }
 
     public List<Goods> getGoods(){
@@ -75,7 +77,27 @@ public class CommerceTile extends BigPictureTile {
     }
 
     @Override
+    public void changeCapacity(double factor){
+        super.changeCapacity(factor);
+        setGoodsCapacity();
+        setJobCapacity();
+    }
+
+    @Override
     public boolean canAcceptCustomer(){
-        return goods.size() > 0 && traders.size() > 0;
+        return goods.size() > reservedGoods && traders.size() > 0;
+    }
+
+    @Override
+    public void addActor(Actor actor) {
+        super.addActor(actor);
+        reservedGoods++;
+    }
+
+    @Override
+    public void removeActor(Actor actor){
+        super.removeActor(actor);
+        removeGoods();
+        reservedGoods -= 1;
     }
 }

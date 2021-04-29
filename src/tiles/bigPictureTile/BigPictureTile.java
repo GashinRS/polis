@@ -137,9 +137,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         return minimalCapcity;
     }
 
-    /**
-     * TODO die == 1 wegwerken als er tijd is
-     */
     public void addActor(Actor actor){
         actors.add(actor);
         if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(0)))){
@@ -147,9 +144,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         } else if (actors.size() == Double.parseDouble(mouseMovementTracker.getLevelsProperties().getProperty(LEVEL_REQUIREMENTS.get(type).get(2)))) {
             upgrade();
         }
-//        } else if (!activated){
-//            upgrade();
-//        }
     }
 
     public void removeActor(Actor actor){

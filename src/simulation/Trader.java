@@ -21,16 +21,17 @@ public class Trader extends Actor{
     @Override
     public void act() {
         setAge(getAge()-1);
-        if (getAge() == 0){
+    }
+
+    @Override
+    public boolean isValid() {
+        boolean isAgeValid = getAge() > 0;
+        if (!isAgeValid){
             shop.removeTrader(this);
             Shopper shopper = new Shopper(getMouseMovementTracker(), getHomeLocation().getKey(),
                     getHomeLocation().getValue(), getEngineProperties());
             setNewActor(shopper);
         }
-    }
-
-    @Override
-    public boolean isValid() {
-        return getAge() > 0;
+        return isAgeValid;
     }
 }

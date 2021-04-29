@@ -3,23 +3,34 @@ package simulation;
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
 import simulation.Actor;
+import tiles.bigPictureTile.BigPictureTile;
+import tiles.bigPictureTile.CommerceTile;
 
 import java.util.Properties;
 
 public class Customer extends Actor {
 
-    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties) {
+    private final BigPictureTile shop;
+
+    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile shop) {
         super(mouseMovementTracker, r, k, engineProperties);
-        setFill(Color.PURPLE);
+        setFill(Color.TRANSPARENT);
+        this.shop=shop;
+        setAge(Integer.parseInt(engineProperties.getProperty("customer.age")));
     }
 
     @Override
     public void act() {
-
+        setAge(getAge()-1);
     }
 
     @Override
     public boolean isValid() {
-        return true;
+        boolean isAgeValid = getAge() > 0;
+        if (!isAgeValid){
+            shop.removeActor(this);
+            setNewActor(new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties()));
+        }
+        return isAgeValid;
     }
 }

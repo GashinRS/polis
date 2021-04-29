@@ -33,9 +33,8 @@ public class Shopper extends Actor {
 
     public void checkIfShopperCanBecomeCustomer(BigPictureTile buildingTile){
         if (buildingTile.canAcceptCustomer()){
-            Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties());
+            Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), buildingTile);
             setNewActor(customer);
-            System.out.println("bruh");
             shoppingPlaceFound = true;
             buildingTile.addActor(this);
             if (buildingTile.isAtMaxCapacity()){
@@ -47,11 +46,6 @@ public class Shopper extends Actor {
             continueSearching();
         }
     }
-
-//    public void continueSearching(){
-//        move();
-//        setAge(getAge()-1);
-//    }
 
     @Override
     public boolean isValid() {

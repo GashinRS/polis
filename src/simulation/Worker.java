@@ -27,6 +27,13 @@ public class Worker extends Actor{
 
     @Override
     public boolean isValid() {
-        return getAge() > 0;
+        boolean isAgeValid = getAge() > 0;
+        if (!isAgeValid) {
+            workplace.removeActor(this);
+            Shopper shopper = new Shopper(getMouseMovementTracker(), getHomeLocation().getKey(),
+                    getHomeLocation().getValue(), getEngineProperties());
+            setNewActor(shopper);
+        }
+        return isAgeValid;
     }
 }

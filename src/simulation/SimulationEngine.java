@@ -66,7 +66,7 @@ public class SimulationEngine {
             /**
              * niet vergeten om dit terug toe te voegen als alles werkt
              */
-            //region.makeImmigrant();
+            region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
     }
