@@ -3,7 +3,7 @@ package simulation.actors;
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
 import simulation.Region;
-import tiles.bigPictureTile.BigPictureTile;
+import tiles.buildtingTiles.BuildingTile;
 
 import java.util.List;
 import java.util.Properties;
@@ -22,9 +22,9 @@ public class Immigrant extends Actor {
 
     @Override
     public void act() {
-        List<BigPictureTile> leftAndRightBuildings = getLeftAndRightBuildings();
-        BigPictureTile buildingTile1 = leftAndRightBuildings.get(0);
-        BigPictureTile buildingTile2 = leftAndRightBuildings.get(1);
+        List<BuildingTile> leftAndRightBuildings = getLeftAndRightBuildings();
+        BuildingTile buildingTile1 = leftAndRightBuildings.get(0);
+        BuildingTile buildingTile2 = leftAndRightBuildings.get(1);
         if ( buildingTile1 != null && buildingTile1.isResidence() && !buildingTile1.isAtMaxCapacity()){
             setResidence(buildingTile1);
         } else if (buildingTile2 != null && buildingTile2.isResidence() && !buildingTile2.isAtMaxCapacity()){
@@ -34,7 +34,11 @@ public class Immigrant extends Actor {
         }
     }
 
-    public void setResidence(BigPictureTile residence){
+    /**
+     * Wordt opgeroepen wanneer een immigrant een woning heeft gevonden, en zal een slaper toevoegen aan deze woning
+     */
+
+    private void setResidence(BuildingTile residence){
         Sleeper sleeper = new Sleeper(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), getDirection());
         if (!residence.isActivated()){
             residence.activate();

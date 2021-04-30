@@ -8,12 +8,8 @@ public class ResidenceButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setBigPictureTileEventHandler("residence");
-//    }
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setBigPictureTileEventHandler("residence");
+        getMouseMovementTracker().setbuildingTileEventHandler("residence");
     }
 }

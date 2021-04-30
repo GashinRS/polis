@@ -1,10 +1,10 @@
-package tiles.bigPictureTile;
+package tiles.buildtingTiles;
 
 
 import polis.MouseMovementTracker;
 import simulation.GeneralStatistics;
 
-public class ResidenceTile extends BigPictureTile {
+public class ResidenceTile extends BuildingTile {
 
     public ResidenceTile() {
         super("residence");

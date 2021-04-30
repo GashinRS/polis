@@ -12,7 +12,6 @@ public class RoadTile extends Tile implements RemovableTile{
 
     private final int r;
     private final int k;
-    private int imageNumber;
     private List<RoadTile> neighbors;
     private final MouseMovementTracker mouseMovementTracker;
 
@@ -23,9 +22,8 @@ public class RoadTile extends Tile implements RemovableTile{
         this.mouseMovementTracker=mouseMovementTracker;
         setViewOrder(-r -k -1);
         mouseMovementTracker.getRoadTiles().put(new Pair<>(r, k), this);
-        //mouseMovementTracker.getTiles().put(new Pair<>(r, k), this);
         mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
-        imageNumber = checkNeighbors();
+        int imageNumber = checkNeighbors();
         for (RoadTile neighbor: neighbors){
             neighbor.invalidated();
         }
@@ -35,7 +33,8 @@ public class RoadTile extends Tile implements RemovableTile{
     /**
      * Checkt welke buren er zijn en returnt een getal waarmee de afbeelding van de RoadTile ingesteld kan worden
      */
-    public int checkNeighbors(){
+
+    private int checkNeighbors(){
         int number = 0;
         neighbors = new ArrayList<>();
         RoadTile noordOost = mouseMovementTracker.getRoadTiles().get(new Pair<>(r-1, k));
@@ -46,6 +45,7 @@ public class RoadTile extends Tile implements RemovableTile{
         neighbors.add(zuidOost);
         neighbors.add(zuidWest);
         neighbors.add(noordWest);
+        //aan de hand van een binaire waarde wordt bepaald welke afbeeldingnummer de RoadTile moet hebben
         int binaryValue = 1;
         for (RoadTile neighbor: neighbors){
             if (neighbor != null){
@@ -57,7 +57,7 @@ public class RoadTile extends Tile implements RemovableTile{
         return number;
     }
 
-    public void setImage(int number){
+    private void setImage(int number){
         try (InputStream in = this.getClass().getResourceAsStream("/polis/tiles/road-" + number + ".png")){
             ImagePattern imagePattern = new ImagePattern(new Image(in));
             this.setFill(imagePattern);
@@ -66,15 +66,15 @@ public class RoadTile extends Tile implements RemovableTile{
         }
     }
 
-    public void invalidated() {
+    private void invalidated() {
         setImage(checkNeighbors());
     }
 
-    public int getR() {
+    private int getR() {
         return r;
     }
 
-    public int getK() {
+    private int getK() {
         return k;
     }
 

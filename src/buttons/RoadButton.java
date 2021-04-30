@@ -8,12 +8,8 @@ public class RoadButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setRoadMode();
-//    }
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setRoadMode();
+        getMouseMovementTracker().setRoadMode();
     }
 }

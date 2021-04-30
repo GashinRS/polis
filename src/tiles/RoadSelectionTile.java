@@ -1,12 +1,14 @@
 package tiles;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
 
-public class RoadSelectionTile extends CursorTile implements InvalidationListener {
+/**
+ * Dit is het cursorblokje dat de muis volgt bij het leggen van wegen.
+ */
+
+public class RoadSelectionTile extends CursorTile {
 
     private Color color;
 
@@ -15,8 +17,7 @@ public class RoadSelectionTile extends CursorTile implements InvalidationListene
         setFill(Color.rgb(90, 155,255, 0.5));
     }
 
-    @Override
-    public void invalidated(Observable o){
+    public void placeRoadIfValid(){
         if (isValid()){
             getMouseMovementTracker().getCityArea().getChildren().add(new RoadTile(getR(), getK(), getMouseMovementTracker()));
         }

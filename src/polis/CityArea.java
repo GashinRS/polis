@@ -5,12 +5,11 @@ import javafx.scene.layout.Pane;
 import tiles.Area;
 import tiles.NonRemovableRoadTile;
 
-import java.util.Random;
-
+/**
+ * Deze klasse bevat alle visuele aspecten van de stad (afbeeldingen en de achtergrond)
+ */
 
 public class CityArea extends Pane {
-
-    //private MouseMovementTracker mouseMovementTracker;
 
     public CityArea(MouseMovementTracker mouseMovementTracker){
         this.setPrefWidth(64 * 2 * 32);
@@ -23,7 +22,6 @@ public class CityArea extends Pane {
 
         this.getChildren().add(area);
 
-        //this.mouseMovementTracker=mouseMovementTracker;
         getChildren().add(mouseMovementTracker);
         mouseMovementTracker.setCityArea(this);
         for (int i = 0; i < 16; i++) {

@@ -2,15 +2,15 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import tiles.bigPictureTile.BigPictureTile;
+import tiles.buildtingTiles.BuildingTile;
 
 import java.util.Properties;
 
 public class Customer extends Actor {
 
-    private final BigPictureTile shop;
+    private final BuildingTile shop;
 
-    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile shop, int direction) {
+    public Customer(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BuildingTile shop, int direction) {
         super(mouseMovementTracker, r, k, engineProperties, direction);
         setFill(Color.TRANSPARENT);
         this.shop=shop;

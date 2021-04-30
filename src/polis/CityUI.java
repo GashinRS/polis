@@ -37,7 +37,7 @@ public class CityUI extends VBox {
         selectionButton.setToggleGroup(toggleGroup);
         bulldozerButton.setToggleGroup(toggleGroup);
         commerceButton.setToggleGroup(toggleGroup);
-        industryButton.setToggleGroup(toggleGroup);;
+        industryButton.setToggleGroup(toggleGroup);
         residenceButton.setToggleGroup(toggleGroup);
 
         this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));

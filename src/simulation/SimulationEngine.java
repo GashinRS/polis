@@ -33,18 +33,22 @@ public class SimulationEngine {
         mouseMovementTracker.setEngineProperties(engineProperties);
         actors = new ArrayList<>();
         region = new Region(mouseMovementTracker, this);
-        region.makeImmigrant();
         tempo = Integer.parseInt(engineProperties.getProperty("region.initial.rate"));
         ticks = RG.nextInt( (int) tempo);
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(5),
+                new KeyFrame(Duration.millis(250),
                         this::eachTick)
         );
     }
 
-    public void eachTick(ActionEvent ae){
+    /**
+     * Bij elke tick wordt eerst gekeken of de actors nog geldig zijn, zo niet worden ze verwijderd, zo ja wordt hun act()
+     * uitgevoerd. Hierna worden alle nieuwe actors (indien die er zijn) toegevoegd aan de huidige lijst van actors.
+     */
+
+    private void eachTick(ActionEvent ae){
         Set<Actor> newActors = new HashSet<>();
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()){
@@ -60,12 +64,8 @@ public class SimulationEngine {
         }
         actors.addAll(newActors);
         ticks -= 1;
-        //het tempo zal zo altijd liggen tussen de initial rate en slowest rate
         setTempo(Double.parseDouble(engineProperties.getProperty("region.factor.recovery")));
         if (ticks < 0){
-            /**
-             * niet vergeten om dit terug toe te voegen als alles werkt
-             */
             region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
@@ -78,6 +78,10 @@ public class SimulationEngine {
     public void pause(){
         timeline.pause();
     }
+
+    /**
+     * Stelt een nieuw tempo in, rekeninghoudend met dat het nieuwe tempo tussen de initial rate en slowest rate moet zitten
+     */
 
     public void setTempo(double factor){
         tempo = Math.min(Math.max(tempo * factor,

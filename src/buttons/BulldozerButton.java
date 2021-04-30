@@ -8,12 +8,8 @@ public class BulldozerButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setBulldozerMode();
-//    }
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setBulldozerMode();
+        getMouseMovementTracker().setBulldozerMode();
     }
 }

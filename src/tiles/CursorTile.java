@@ -17,7 +17,7 @@ public abstract class CursorTile extends Tile {
         setViewOrder(-100);
     }
 
-    public void setRK(int r, int k) {
+    private void setRK(int r, int k) {
         this.r=r;
         this.k=k;
     }

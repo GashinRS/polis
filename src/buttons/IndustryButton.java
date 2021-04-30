@@ -8,12 +8,8 @@ public class IndustryButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setBigPictureTileEventHandler("industry");
-//    }
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setBigPictureTileEventHandler("industry");
+        getMouseMovementTracker().setbuildingTileEventHandler("industry");
     }
 }

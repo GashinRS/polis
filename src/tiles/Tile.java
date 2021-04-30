@@ -2,6 +2,10 @@ package tiles;
 
 import javafx.scene.shape.Polygon;
 
+/**
+ * Bovenklasse voor alle tiles waarmee makkelijk een tile van een bepaalde grootte aangemaakt kan worden.
+ */
+
 public abstract class Tile extends Polygon {
 
     private final int cellSize;

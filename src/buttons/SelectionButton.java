@@ -8,12 +8,8 @@ public class SelectionButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setSelectionMode();
-//    }
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setSelectionMode();
+        getMouseMovementTracker().setSelectionMode();
     }
 }

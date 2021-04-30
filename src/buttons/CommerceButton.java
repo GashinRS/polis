@@ -8,13 +8,9 @@ public class CommerceButton extends GameButton {
         super(filename, width, height, mouseMovementTracker);
     }
 
-//    @Override
-//    public void handle(ActionEvent ae){
-//        mouseMovementTracker.setBigPictureTileEventHandler("commerce");
-//    }
 
     @Override
     public void buttonSelected(){
-        mouseMovementTracker.setBigPictureTileEventHandler("commerce");
+        getMouseMovementTracker().setbuildingTileEventHandler("commerce");
     }
 }

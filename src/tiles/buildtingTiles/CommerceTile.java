@@ -1,8 +1,7 @@
-package tiles.bigPictureTile;
+package tiles.buildtingTiles;
 
 import polis.MouseMovementTracker;
 import simulation.GeneralStatistics;
-import simulation.InfoPanel;
 import simulation.actors.Actor;
 import simulation.actors.Goods;
 import simulation.actors.Trader;
@@ -10,7 +9,7 @@ import simulation.actors.Trader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommerceTile extends BigPictureTile {
+public class CommerceTile extends BuildingTile {
 
     private double customersPerTrader;
     private double goodsPerCustomer;
@@ -59,12 +58,12 @@ public class CommerceTile extends BigPictureTile {
         getGeneralStatistics().setCurrentGoods(this.goods.size()-1, this.goods.size());
     }
 
-    public void removeGoods(){
+    private void removeGoods(){
         this.goods.remove(0);
         getGeneralStatistics().setCurrentGoods(this.goods.size(), this.goods.size()-1);
     }
 
-    public void setJobCapacity(){
+    private void setJobCapacity(){
         double oldJobCapacity = jobCapacity;
         jobCapacity = Math.max(getMinimalCapcity(), getCapacity()/customersPerTrader);
         getGeneralStatistics().setMaxJobs(oldJobCapacity, jobCapacity);
@@ -75,7 +74,7 @@ public class CommerceTile extends BigPictureTile {
         return traders.size() >= Math.floor(jobCapacity);
     }
 
-    public void setGoodsCapacity(){
+    private void setGoodsCapacity(){
         double oldGoodsCapacity = goodsCapacity;
         goodsCapacity = Math.max(getMinimalCapcity(), getCapacity()*goodsPerCustomer);
         getGeneralStatistics().setMaxGoods(oldGoodsCapacity, goodsCapacity);

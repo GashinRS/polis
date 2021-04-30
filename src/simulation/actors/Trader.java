@@ -2,9 +2,7 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import simulation.actors.Actor;
-import simulation.actors.Shopper;
-import tiles.bigPictureTile.CommerceTile;
+import tiles.buildtingTiles.CommerceTile;
 
 import java.util.Properties;
 

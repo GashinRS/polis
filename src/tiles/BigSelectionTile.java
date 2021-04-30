@@ -7,8 +7,9 @@ import polis.MouseMovementTracker;
 public class BigSelectionTile extends CursorTile{
 
     private Color color;
+
     //deze array ondersteunt bij het checken of een gebouw geplaats kan worden
-    private static final int[][] filledTiles= new int[][] {
+    private static final int[][] FILLED_TILES= new int[][] {
             {0, 1, 0, 1}, {0, 0, 1, 1}
     };
 
@@ -23,8 +24,8 @@ public class BigSelectionTile extends CursorTile{
         boolean valid = true;
         int i = 0;
         while (valid && i < 4){
-            valid = getMouseMovementTracker().getBuildingTiles().get(new Pair<>(r+filledTiles[0][i], k+filledTiles[1][i])) == null &&
-                    getMouseMovementTracker().getRoadTiles().get(new Pair<>(r+filledTiles[0][i], k+filledTiles[1][i])) == null;
+            valid = getMouseMovementTracker().getBuildingTiles().get(new Pair<>(r+FILLED_TILES[0][i], k+FILLED_TILES[1][i])) == null &&
+                    getMouseMovementTracker().getRoadTiles().get(new Pair<>(r+FILLED_TILES[0][i], k+FILLED_TILES[1][i])) == null;
             i++;
         }
         if (valid){

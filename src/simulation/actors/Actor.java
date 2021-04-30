@@ -3,7 +3,7 @@ package simulation.actors;
 import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
-import tiles.bigPictureTile.BigPictureTile;
+import tiles.buildtingTiles.BuildingTile;
 
 import java.util.*;
 
@@ -15,19 +15,18 @@ public abstract class Actor extends Circle {
     private int age;
     private Pair<Integer, Integer> homeLocation;
     private final Properties engineProperties;
-    private BigPictureTile home;
+    private BuildingTile home;
+
     //deze lijst zal de actor bevatten waarin de huidige actor verandert, wanneer de verandering plaatsvindt
     private final List<Actor> newActors = new ArrayList<>();
+
     private static final Random RG = new Random();
-    //0==ZW, 1==NW, 2==NO, 3==ZO
-    //extra element 42 aan toegevoegd om nullpointer exception te vermijden en zodat de actor blijft staan
-    //als hij geen enkele van de richtingen op kan
-    /**
-     * TODO: vervang die 42 best door iets anders dat meer functional is
-     */
+
+    //0==ZW, 1==NW, 2==NO, 3==ZO, 4 == geen verplaatsing
     private static final int[][] DIRECTIONS = new int[][] {
-            { 0,1,3,2,42}, {0,3,1,2,42}, {1,3,0,2,42}, {1,0,3,2,42}, {3,0,1,2,42}, {3,1,0,2,42}
+            { 0,1,3,2,4}, {0,3,1,2,4}, {1,3,0,2,4}, {1,0,3,2,4}, {3,0,1,2,4}, {3,1,0,2,4}
     };
+
     //wordt gebruikt om random rechts of links te bepalen afhankelijk van de richting van de actor
     private static final int[][][] LEFTRIGHT = new int[][][] {
             {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}, {{0, 1, 0, -1}, {0, -1, 0, 1}}, {{-1, 0, 1, 0}, {1, 0, -1, 0}}
@@ -40,9 +39,15 @@ public abstract class Actor extends Circle {
             3, new Integer[] {-64/4, 2*(64/3)} //ZO
     );
 
-    private static final int [] rco = new int[] {1, 0, -1, 0};
-    private static final int [] kco = new int[] {0, -1, 0, 1};
+    //wordt gebruikt om coordinaten te krijgen van de blokjes die rond de actor liggen
+    private static final int [] RCO = new int[] {1, 0, -1, 0};
+    private static final int [] KCO = new int[] {0, -1, 0, 1};
     private int direction;
+
+    /**
+     * Bij het aanmaken van een actor wordt altijd een richting doorgegeven zodat de nieuwe actor niet achteruit zal
+     * gaan ten op zichte van de actor die hij hiervoor was.
+     */
 
     public Actor(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, int direction) {
         super(DIRECTION_MAPPINGS.get(direction)[0], DIRECTION_MAPPINGS.get(direction)[1], 64/6);
@@ -60,41 +65,44 @@ public abstract class Actor extends Circle {
         return direction;
     }
 
+    /**
+     * Deze methode wordt elke tick (in de simulatiemotor) uitgevoerd door alle geldige actors
+     */
+
     public abstract void act();
 
     /**
-     * Deze methode wordt gebruikt door de simulatiemotor om te kijken of de actor verwijderd moet worden
+     * Deze methode wordt gebruikt door de simulatiemotor om te kijken of de actor verwijderd moet worden.
+     * In eerste instantie is dit wanneer de leeftijd 0 wordt, maar sommige actors hebben ook nog bijkomende voorwaarden
+     * voor wanneer ze verwijderd moeten worden
      */
+
     public abstract boolean isValid();
 
+    /**
+     * Deze methode zorgt ervoor dat een actor een random richting zal kiezen om in te bewegen, waarbij hij enkel naar
+     * achter gaat als het niet anders kan, en als dat ook niet kan blijft hij staan.
+     */
 
-    public void move(){
+    private void move(){
         int option = RG.nextInt(6);
         int index = 0;
         int newDirection = (direction + DIRECTIONS[option][index]) % 4;
-        while (mouseMovementTracker.getRoadTiles().get(new Pair<>(r+rco[newDirection], k+kco[newDirection])) == null &&
+        while (mouseMovementTracker.getRoadTiles().get(new Pair<>(r+RCO[newDirection], k+KCO[newDirection])) == null &&
         index < 4){
             index++;
             newDirection = (direction + DIRECTIONS[option][index]) % 4;
         }
         if (index < 4){
             direction = newDirection;
-            r=r+rco[newDirection];
-            k=k+kco[newDirection];
+            r=r+RCO[newDirection];
+            k=k+KCO[newDirection];
             mouseMovementTracker.getCityArea().setTranslateXY(this, r, k);
             setViewOrder(-r-k-1.5);
             setCenterX(DIRECTION_MAPPINGS.get(direction)[0]);
             setCenterY(DIRECTION_MAPPINGS.get(direction)[1]);
         }
 
-    }
-
-    public void setR(int r){
-        this.r=r;
-    }
-
-    public void setK(int k) {
-        this.k=k;
     }
 
     public int getR() {
@@ -121,6 +129,10 @@ public abstract class Actor extends Circle {
         return newActors;
     }
 
+    /**
+     * Deze methode wordt gebruikt een een oude actor te vervangen door een nieuwe, bv wanneer een immigrant een slaper wordt.
+     */
+
     public void setNewActor(Actor newActor){
         newActors.add(newActor);
         mouseMovementTracker.getCityArea().getChildren().remove(this);
@@ -128,12 +140,12 @@ public abstract class Actor extends Circle {
         home.getActors().set(home.getActors().indexOf(this), newActor);
     }
 
-    public void setHome(int r, int k, BigPictureTile home){
+    public void setHome(int r, int k, BuildingTile home){
         homeLocation = new Pair<>(r, k);
         this.home=home;
     }
 
-    public BigPictureTile getHome(){
+    public BuildingTile getHome(){
         return home;
     }
 
@@ -145,10 +157,13 @@ public abstract class Actor extends Circle {
         return engineProperties;
     }
 
+    /**
+     * Deze methode wordt gebruikt om random rechts en links te checken of er een gebouw is.
+     */
 
-    public List<BigPictureTile> getLeftAndRightBuildings(){
+    public List<BuildingTile> getLeftAndRightBuildings(){
         int randomInt = RG.nextInt(2);
-        List<BigPictureTile> buildingTiles = new ArrayList<>();
+        List<BuildingTile> buildingTiles = new ArrayList<>();
         buildingTiles.add(mouseMovementTracker.getBuildingTiles().get(new Pair<>(r+LEFTRIGHT[direction][randomInt][0],
                 k+LEFTRIGHT[direction][randomInt][1])));
         buildingTiles.add(mouseMovementTracker.getBuildingTiles().get(new Pair<>(r+LEFTRIGHT[direction][randomInt][2],

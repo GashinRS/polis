@@ -2,15 +2,15 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import tiles.bigPictureTile.BigPictureTile;
+import tiles.buildtingTiles.BuildingTile;
 
 import java.util.Properties;
 
 public class Worker extends Actor {
 
-    private final BigPictureTile workplace;
+    private final BuildingTile workplace;
 
-    public Worker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BigPictureTile workplace, int direction) {
+    public Worker(MouseMovementTracker mouseMovementTracker, int r, int k, Properties engineProperties, BuildingTile workplace, int direction) {
         super(mouseMovementTracker, r, k, engineProperties, direction);
         this.workplace = workplace;
         setFill(Color.TRANSPARENT);

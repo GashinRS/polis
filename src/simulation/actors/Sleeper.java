@@ -2,8 +2,6 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import simulation.actors.Actor;
-import simulation.actors.JobSeeker;
 
 import java.util.Properties;
 

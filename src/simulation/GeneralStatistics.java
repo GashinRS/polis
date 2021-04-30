@@ -6,19 +6,26 @@ import javafx.beans.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dit is het model voor de algemene statistieken over heel de simulatie. Elk gebouw houdt dit bij zodat de waarden
+ * direct geupdate worden wanneer nodig.
+ */
+
 public class GeneralStatistics implements InfoPanelModel, Observable {
 
+    //residence informatie
     private int currentInhabitants;
     private double maxInhabitants;
 
+    //gedeelde informatie tussen industry en commerce voor jobs
     private int currentJobs;
     private double maxJobs;
 
+    //commerce informatie
     private int currentCustomers;
     private double maxCustomers;
     private int currentGoods;
     private double maxGoods;
-
 
     @Override
     public List<Number> getStats() {
@@ -55,6 +62,25 @@ public class GeneralStatistics implements InfoPanelModel, Observable {
         fireInvalidationEvent();
     }
 
+
+    public void setCurrentJobs(int currentJobsOld, int currentJobsNew){
+        currentJobs += (-currentJobsOld + currentJobsNew);
+        fireInvalidationEvent();
+    }
+
+    public void setMaxJobs(double maxJobsOld, double maxJobsNew){
+        maxJobs += (-maxJobsOld + maxJobsNew);
+        fireInvalidationEvent();
+    }
+
+    private final List<InvalidationListener> listeners = new ArrayList<>();
+
+    private void fireInvalidationEvent(){
+        for (InvalidationListener listener:listeners){
+            listener.invalidated(this);
+        }
+    }
+
     /**
      * De increase methoden worden enkel gebruikt bij het aanmaken van een BuildingTile
      */
@@ -71,24 +97,6 @@ public class GeneralStatistics implements InfoPanelModel, Observable {
 
     public void increaseMaxCustomers(double maxCustomers){
         this.maxCustomers += maxCustomers;
-    }
-
-    public void setCurrentJobs(int currentJobsOld, int currentJobsNew){
-        currentJobs += (-currentJobsOld + currentJobsNew);
-        fireInvalidationEvent();
-    }
-
-    public void setMaxJobs(double maxJobsOld, double maxJobsNew){
-        maxJobs += (-maxJobsOld + maxJobsNew);
-        fireInvalidationEvent();
-    }
-
-    private final List<InvalidationListener> listeners = new ArrayList<>();
-
-    public void fireInvalidationEvent(){
-        for (InvalidationListener listener:listeners){
-            listener.invalidated(this);
-        }
     }
 
     @Override

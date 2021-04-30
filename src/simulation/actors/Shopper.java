@@ -2,7 +2,7 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import tiles.bigPictureTile.BigPictureTile;
+import tiles.buildtingTiles.BuildingTile;
 
 import java.util.List;
 import java.util.Properties;
@@ -19,9 +19,9 @@ public class Shopper extends Actor {
 
     @Override
     public void act() {
-        List<BigPictureTile> leftAndRightBuildings = getLeftAndRightBuildings();
-        BigPictureTile buildingTile1 = leftAndRightBuildings.get(0);
-        BigPictureTile buildingTile2 = leftAndRightBuildings.get(1);
+        List<BuildingTile> leftAndRightBuildings = getLeftAndRightBuildings();
+        BuildingTile buildingTile1 = leftAndRightBuildings.get(0);
+        BuildingTile buildingTile2 = leftAndRightBuildings.get(1);
         if ( buildingTile1 != null && buildingTile1.isCommerce()){
             checkIfShopperCanBecomeCustomer(buildingTile1);
         } else if (buildingTile2 != null && buildingTile2.isCommerce()){
@@ -31,7 +31,11 @@ public class Shopper extends Actor {
         }
     }
 
-    public void checkIfShopperCanBecomeCustomer(BigPictureTile buildingTile){
+    /**
+     * Checkt of een shopper een klant kan worden in een winkel, zo ja krijgt de winkel een klant bij, zo niet
+     * blijft de shopper verder zoeken
+     */
+    private void checkIfShopperCanBecomeCustomer(BuildingTile buildingTile){
         if (buildingTile.canAcceptCustomer()){
             Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), buildingTile, getDirection());
             setNewActor(customer);

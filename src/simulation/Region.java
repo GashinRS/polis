@@ -3,6 +3,11 @@ package simulation;
 import polis.MouseMovementTracker;
 import simulation.actors.Immigrant;
 
+/**
+ * De Region maakt immigranten op een tempo bepaald door de simulatiemotor. Dit tempo kan ook vanuit de regio vertraagd
+ * worden als immigranten geen huis vinden.
+ */
+
 public class Region {
 
     private final MouseMovementTracker mouseMovementTracker;

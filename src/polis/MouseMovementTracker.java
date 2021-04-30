@@ -1,7 +1,5 @@
 package polis;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
@@ -15,30 +13,30 @@ import simulation.GeneralStatistics;
 import simulation.InfoPanel;
 import simulation.SimulationEngine;
 import tiles.*;
-import tiles.bigPictureTile.*;
+import tiles.buildtingTiles.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 
-public class MouseMovementTracker extends Pane implements Observable {
+public class MouseMovementTracker extends Pane {
 
-    private Map<Pair<Integer, Integer>, RoadTile> roadTiles = new HashMap<>();
-    private List<InvalidationListener> roadSelectionDragTiles = new ArrayList<>();
-    private Map<Pair<Integer, Integer>, BigPictureTile> buildingTiles = new HashMap<>();
+    private final Map<Pair<Integer, Integer>, RoadTile> roadTiles = new HashMap<>();
+    private final List<RoadSelectionTile> roadSelectionDragTiles = new ArrayList<>();
+    private final Map<Pair<Integer, Integer>, BuildingTile> buildingTiles = new HashMap<>();
 
     private final SelectionTile selectionTile = new SelectionTile(this);
     private final RoadSelectionTile roadSelectionTile = new RoadSelectionTile(this);
     private final BigSelectionTile bigSelectionTile = new BigSelectionTile(this);
     private final List<CursorTile> cursorTiles = List.of(selectionTile, roadSelectionTile, bigSelectionTile);
     private CursorTile cursorTile;
-    private String bigPictureTileType;
+    private String buildingTileType;
     //Startcoordinaten van het slepen bij het plaatsen van wegen
     private int rDrag;
     private int kDrag;
     private CityArea cityArea;
-    private static final Map<String, BigPictureTileFactory> bigPictureTileFactories = Map.of(
+    private static final Map<String, BuildingTileFactory> BUILDING_TILE_FACTORY_MAP = Map.of(
             "residence", ResidenceTile::new,
             "commerce", CommerceTile::new,
             "industry", IndustryTile::new
@@ -47,7 +45,6 @@ public class MouseMovementTracker extends Pane implements Observable {
     private final Properties levelsProperties = new Properties();
     private final InfoPanel infoPanel;
     private final GeneralStatistics generalStatistics;
-
 
     public MouseMovementTracker(InfoPanel infoPanel, GeneralStatistics generalStatistics) {
         this.infoPanel=infoPanel;
@@ -65,9 +62,9 @@ public class MouseMovementTracker extends Pane implements Observable {
         } catch (IOException ie){
             System.err.println("levels properties bestand kon niet gevonden of gelezen worden");
         }
-        bigPictureTileHandler = e -> {
+        buildingTileHandler = e -> {
             if (bigSelectionTile.isValid()) {
-                bigPictureTileFactories.get(bigPictureTileType).createBigPictureTile().initialize(this, bigSelectionTile.getR(), bigSelectionTile.getK(), generalStatistics);
+                BUILDING_TILE_FACTORY_MAP.get(buildingTileType).creatBuildingTile().initialize(this, bigSelectionTile.getR(), bigSelectionTile.getK(), generalStatistics);
             }
         };
     }
@@ -84,11 +81,12 @@ public class MouseMovementTracker extends Pane implements Observable {
     /**
      * Stelt de modus in voor commerce, industry en residence
      */
-    EventHandler<MouseEvent> bigPictureTileHandler;
-    public void setBigPictureTileEventHandler(String bigPictureTileType) {
-        this.bigPictureTileType = bigPictureTileType;
-        switchMode(bigSelectionTile, bigPictureTileHandler);
+
+    public void setbuildingTileEventHandler(String buildingTileType) {
+        this.buildingTileType = buildingTileType;
+        switchMode(bigSelectionTile, buildingTileHandler);
     }
+    private final EventHandler<MouseEvent> buildingTileHandler;
 
 
     public void setBulldozerMode() {
@@ -96,12 +94,7 @@ public class MouseMovementTracker extends Pane implements Observable {
         switchMode(selectionTile, bulldozerHandler);
     }
 
-    /**
-     * TODO: buildingTiles en roadTiles bijhouden in een aparte lijst nog, dan kunnen er op andere plaatsen ook
-     * ifs versimpeld worden; edited: mss niet meer nodig met huidige implementatie
-     */
-
-    EventHandler<MouseEvent> bulldozerHandler = e -> {
+    private final EventHandler<MouseEvent> bulldozerHandler = e -> {
         Map<Pair<Integer, Integer>, RemovableTile> removableTiles = new HashMap<>(buildingTiles);
         removableTiles.putAll(roadTiles);
         RemovableTile removableTile = removableTiles.get(new Pair<>(getR(e), getK(e)));
@@ -110,10 +103,16 @@ public class MouseMovementTracker extends Pane implements Observable {
         }
     };
 
+    /**
+     * In SelectionMode wordt het model van het infopaneel ingesteld afhankelijk van waarop de gebruiker klikt.
+     * Standaard staat het model ingesteld op de algemene informatie van heel de simulatie, namelijk de klasse
+     * GeneralStatistics.
+     */
+
     public void setSelectionMode() {
         selectionTile.setStroke(Color.WHITE);
         switchMode(selectionTile, e -> {
-            BigPictureTile tile = buildingTiles.get(new Pair<>(getR(e), getK(e)));
+            BuildingTile tile = buildingTiles.get(new Pair<>(getR(e), getK(e)));
             if (tile != null) {
                 infoPanel.setModel(tile);
             } else {
@@ -133,21 +132,30 @@ public class MouseMovementTracker extends Pane implements Observable {
         setOnMouseReleased(roadPlacer);
     }
 
-    EventHandler<MouseEvent> roadPlacer = e -> {
-        roadSelectionTile.invalidated(this);
+    /**
+     * EventHandler die wegen plaats door op alle plaatsen waar er een RoadSelectionTile staat er een RoadTile te plaatsen
+     */
+
+    private final EventHandler<MouseEvent> roadPlacer = e -> {
+        roadSelectionTile.placeRoadIfValid();
         roadSelectionTile.setFill(roadSelectionTile.getRed());
         cityArea.setTranslateXY(roadSelectionTile, Math.max(Math.min(getR(e), 31), 0), Math.max(Math.min(getK(e), 31), 0));
 
-        for (InvalidationListener roadSelectionDragTile : roadSelectionDragTiles) {
-            roadSelectionDragTile.invalidated(this);
+        for (RoadSelectionTile roadSelectionDragTile : roadSelectionDragTiles) {
+            roadSelectionDragTile.placeRoadIfValid();
         }
         roadSelectionDragTiles.clear();
     };
 
-    EventHandler<MouseEvent> roadDragHandler = e -> {
+
+    /**
+     * EventHandler voor het rondslepen van wegen
+     */
+
+    private final EventHandler<MouseEvent> roadDragHandler = e -> {
         int r = getR(e);
         int k = getK(e);
-        for (InvalidationListener roadSelectionDragTile : roadSelectionDragTiles) {
+        for (RoadSelectionTile roadSelectionDragTile : roadSelectionDragTiles) {
             cityArea.getChildren().remove(roadSelectionDragTile);
         }
         roadSelectionDragTiles.clear();
@@ -155,8 +163,7 @@ public class MouseMovementTracker extends Pane implements Observable {
         int min = Math.max(Math.min(r, rDrag), 0);
         int max = Math.min(Math.max(r, rDrag), 31);
         for (int i = min + 1; i < max; i++) {
-//            roadSelectionDragTiles.add(new RoadSelectionDragTile(i, kDrag, this));
-            addListener(new RoadSelectionDragTile(i, kDrag, this));
+            roadSelectionDragTiles.add(new RoadSelectionDragTile(i, kDrag, this));
         }
 
         min = Math.max(Math.min(k, kDrag), 0);
@@ -166,15 +173,15 @@ public class MouseMovementTracker extends Pane implements Observable {
         int factor = Math.abs(Math.abs(Integer.signum(r - rDrag)) - 1);
 
         for (int i = min + factor; i <= max - factor; i++) {
-//            roadSelectionDragTiles.add(new RoadSelectionDragTile(r, i, this));
-            addListener(new RoadSelectionDragTile(r, i, this));
+            roadSelectionDragTiles.add(new RoadSelectionDragTile(r, i, this));
         }
     };
 
     /**
      * Wordt opgeroepen om te wisselen tussen de verschillende modi wanneer er op een andere knop wordt geklikt.
      */
-    public void switchMode(CursorTile tile, EventHandler<MouseEvent> eventHandler) {
+
+    private void switchMode(CursorTile tile, EventHandler<MouseEvent> eventHandler) {
         for (CursorTile cursorTile : cursorTiles) {
             cursorTile.setVisible(false);
         }
@@ -191,16 +198,17 @@ public class MouseMovementTracker extends Pane implements Observable {
     /**
      * Getters om de coordinaten van de muis om te zetten naar rastercoordinaten
      */
-    public int getR(MouseEvent e) {
+
+    private int getR(MouseEvent e) {
         return (int) Math.round((2 * e.getY() - e.getX() + this.getWidth() / 2) / (2 * 64));
     }
 
-    public int getK(MouseEvent e) {
+    private int getK(MouseEvent e) {
         return (int) Math.round((e.getX() + 2 * e.getY() - this.getWidth() / 2) / (2 * 64));
     }
 
 
-    public Map<Pair<Integer, Integer>, BigPictureTile> getBuildingTiles() {
+    public Map<Pair<Integer, Integer>, BuildingTile> getBuildingTiles() {
         return buildingTiles;
     }
 
@@ -218,20 +226,5 @@ public class MouseMovementTracker extends Pane implements Observable {
 
     public Properties getLevelsProperties(){
         return levelsProperties;
-    }
-
-
-    /**
-     * TODO: is listener patroon hier wel het beste en zo ja verbeteren
-     */
-
-    @Override
-    public void addListener(InvalidationListener invalidationListener) {
-        roadSelectionDragTiles.add(invalidationListener);
-    }
-
-    @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-        roadSelectionDragTiles.remove(invalidationListener);
     }
 }

@@ -1,4 +1,4 @@
-package tiles.bigPictureTile;
+package tiles.buildtingTiles;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
 import simulation.GeneralStatistics;
-import simulation.InfoPanel;
 import simulation.InfoPanelModel;
 import simulation.actors.Actor;
 import tiles.RemovableTile;
@@ -18,12 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * bug met imageview verwijderen
- * TODO: refractoren naar BuildingTile
- */
-
-public abstract class BigPictureTile extends Tile implements RemovableTile, Observable, InfoPanelModel {
+public abstract class BuildingTile extends Tile implements RemovableTile, Observable, InfoPanelModel {
 
     private double capacity;
     private double minimalCapcity;
@@ -32,6 +26,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
     private List<Image> images;
     private final String type;
     private final List<Actor> actors = new ArrayList<>();
+
     private static final Map<String, String> INITIAL_CAPACITIES = Map.of(
             "residence", "residential.capacity.initial",
             "commerce", "commercial.capacity.initial",
@@ -40,20 +35,30 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
             "residence", "residential.capacity.minimal",
             "commerce", "commercial.capacity.minimal",
             "industry", "industrial.capacity.minimal");
+
+    /**
+     * Dit wordt gebruikt om in initialize() de upgrade en downgrade drempels in te stellen.
+     */
+
     private static final Map<String, List<String>> LEVEL_REQUIREMENTS = Map.of(
             "residence", List.of("residential.level1to2", "residential.level2to1", "residential.level2to3", "residential.level3to2"),
             "commerce", List.of("commercial.level1to2", "commercial.level2to1", "commercial.level2to3", "commercial.level3to2"),
             "industry", List.of("industrial.level1to2", "industrial.level2to1", "industrial.level2to3", "industrial.level3to2")
     );
+
+    //alle upgrade en downgrade drempels
     private double[] upgradeThresholds;
     private double[] downgradeThresholds;
+
+    //huidige upgrade en downgrade drempels
     private double upgradeThreshold;
     private double downgradeThreshold;
+
     private int level;
     private boolean existing;
     private GeneralStatistics generalStatistics;
 
-    public BigPictureTile(String type) {
+    public BuildingTile(String type) {
         super(2);
         this.type=type;
         level=0;
@@ -65,9 +70,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
         for (int i = 0; i < 4; i++) {
             mouseMovementTracker.getBuildingTiles().values().remove(this);
         }
-
-        //onduidelijke bug
-        //imageView.setVisible(false);
         mouseMovementTracker.getCityArea().getChildren().remove(imageView);
         existing=false;
         changeGeneralStatistics(actors.size(), 0, capacity, 0);
@@ -77,16 +79,15 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
         return existing;
     }
 
-    public void upgrade() {
+    private void upgrade() {
         imageView.setImage(images.get(level));
         double width = images.get(level).getWidth();
         double height = images.get(level).getHeight();
-        //imageView.setImage(images.get(level));
         imageView.setX(-0.5 * width);
         imageView.setY(0.5 * width - height);
     }
 
-    public void downgrade(){
+    private void downgrade(){
         level -= 1;
         upgrade();
     }
@@ -101,10 +102,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
     }
 
     public boolean isCommerce(){
-        return false;
-    }
-
-    public boolean isIndustry(){
         return false;
     }
 
@@ -123,7 +120,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
              InputStream in3 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-3.png")) {
             images = List.of(new Image(in0), new Image(in1), new Image(in2), new Image(in3));
             imageView = new ImageView(images.get(0));
-            //ivm NPE imageview/vieworder
             imageView.setMouseTransparent(true);
 
             upgrade();
@@ -136,7 +132,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
         }
         capacity=Double.parseDouble(mouseMovementTracker.getEngineProperties().getProperty(INITIAL_CAPACITIES.get(type)));
         minimalCapcity=Double.parseDouble(mouseMovementTracker.getEngineProperties().getProperty(MINIMAL_CAPACITIES.get(type)));
-        //eventueel met een 2d array in for loop werken
         mouseMovementTracker.getBuildingTiles().put(new Pair<>(r, k), this);
         mouseMovementTracker.getBuildingTiles().put(new Pair<>(r + 1, k), this);
         mouseMovementTracker.getBuildingTiles().put(new Pair<>(r, k + 1), this);
@@ -151,6 +146,11 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
         downgradeThreshold = downgradeThresholds[0];
     }
 
+    /**
+     * Als de capaciteit wordt aangepast moet ook worden gecheckt of het gebouw moet upgraden/downgraden en moet deze
+     * veranderen gesignaleerd worden aan de GeneralStatistics klasse zodat het infopaneel geupdate kan worden
+     */
+
     public void changeCapacity(double factor){
         double oldCapacity = capacity;
         capacity = Math.max(minimalCapcity, capacity*factor);
@@ -160,7 +160,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
             downgradeThreshold = downgradeThresholds[level];
             level++;
             upgrade();
-        } else if (capacity < downgradeThreshold){
+        } else if (capacity <= downgradeThreshold){
             downgrade();
             downgradeThreshold = downgradeThresholds[level-1];
             upgradeThreshold = upgradeThresholds[level-1];
@@ -211,9 +211,9 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
         return false;
     }
 
-    private List<InvalidationListener> listeners = new ArrayList<>();
+    private final List<InvalidationListener> listeners = new ArrayList<>();
 
-    public void fireInvalidationEvent(){
+    private void fireInvalidationEvent(){
         for (InvalidationListener listener:listeners){
             listener.invalidated(this);
         }
@@ -222,6 +222,7 @@ public abstract class BigPictureTile extends Tile implements RemovableTile, Obse
     /**
      * Dit wordt gebruikt door het infopaneel om de statistieken op te halen
      */
+
     @Override
     public List<Number> getStats(){
         return List.of(actors.size(), capacity);

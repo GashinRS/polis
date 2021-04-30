@@ -1,7 +1,10 @@
 package tiles;
 
-import javafx.beans.Observable;
 import polis.MouseMovementTracker;
+
+/**
+ * Dit zijn de blokjes die getoond worden wanneer er met de muis gesleept wordt tijdens het leggen van wegen.
+ */
 
 public class RoadSelectionDragTile extends RoadSelectionTile{
 
@@ -17,10 +20,14 @@ public class RoadSelectionDragTile extends RoadSelectionTile{
         checkValidity(r, k);
     }
 
+    /**
+     * Tijdens het leggen van wegen wordt deze methode opgeroepen wanneer de muis losgelaten wordt
+     */
+
     @Override
-    public void invalidated(Observable o){
+    public void placeRoadIfValid(){
         getMouseMovementTracker().getCityArea().getChildren().remove(this);
-        super.invalidated(o);
+        super.placeRoadIfValid();
     }
 
     @Override

@@ -10,12 +10,12 @@ import polis.MouseMovementTracker;
 import java.io.InputStream;
 
 /**
- * gemeenschappelijke bovenklase voor alle buttons behalve de play button
+ * Gemeenschappelijke bovenklase voor alle buttons behalve de play button
  */
 
 public abstract class GameButton extends ToggleButton implements EventHandler<ActionEvent>, MyButton {
 
-    protected MouseMovementTracker mouseMovementTracker;
+    private final MouseMovementTracker mouseMovementTracker;
 
     public GameButton(String filename, int width, int height, MouseMovementTracker mouseMovementTracker) {
         try (InputStream in = this.getClass().getResourceAsStream("/polis/buttons/" + filename + ".png")){
@@ -30,13 +30,17 @@ public abstract class GameButton extends ToggleButton implements EventHandler<Ac
         setOnAction(this);
     }
 
+    public MouseMovementTracker getMouseMovementTracker(){
+        return mouseMovementTracker;
+    }
+
 
     @Override
     public void handle(ActionEvent ae){
         buttonPressed();
     }
 
-    public abstract void buttonSelected();
+    protected abstract void buttonSelected();
 
     @Override
     public void buttonPressed(){

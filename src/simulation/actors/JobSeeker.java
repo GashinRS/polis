@@ -2,8 +2,8 @@ package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import tiles.bigPictureTile.BigPictureTile;
-import tiles.bigPictureTile.CommerceTile;
+import tiles.buildtingTiles.BuildingTile;
+import tiles.buildtingTiles.CommerceTile;
 
 import java.util.List;
 import java.util.Properties;
@@ -20,9 +20,9 @@ public class JobSeeker extends Actor {
 
     @Override
     public void act() {
-        List<BigPictureTile> leftAndRightBuildings = getLeftAndRightBuildings();
-        BigPictureTile buildingTile1 = leftAndRightBuildings.get(0);
-        BigPictureTile buildingTile2 = leftAndRightBuildings.get(1);
+        List<BuildingTile> leftAndRightBuildings = getLeftAndRightBuildings();
+        BuildingTile buildingTile1 = leftAndRightBuildings.get(0);
+        BuildingTile buildingTile2 = leftAndRightBuildings.get(1);
         if (buildingTile1 != null && !buildingTile1.isResidence() && !buildingTile1.isAtMaxCapacity()){
             checkWorkplaceType(buildingTile1);
         } else if (buildingTile2 != null && !buildingTile2.isResidence() && !buildingTile2.isAtMaxCapacity()){
@@ -32,7 +32,11 @@ public class JobSeeker extends Actor {
         }
     }
 
-    public void checkWorkplaceType(BigPictureTile workplace){
+    /**
+     * Checkt of de werkzoekende kan werken in de gevonden werkplaats, zo niet zoekt hij verder.
+     */
+
+    private void checkWorkplaceType(BuildingTile workplace){
         if (workplace.isCommerce()){
             CommerceTile shop = (CommerceTile) workplace;
             if (!shop.isAtMaxJobCapacity()) {
@@ -58,9 +62,11 @@ public class JobSeeker extends Actor {
         }
     }
 
-    public void prepareWork(Actor employee){
-        //dit mag niet bij commerce, mss wel bij industry ma dan best daar id constructor fixen
-        //workplace.addActor(employee);
+    /**
+     * Wordt opgeroepen wanneer een werkzoekende een job heeft gevonden.
+     */
+
+    private void prepareWork(Actor employee){
         setNewActor(employee);
         getHome().changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.job.found")));
         workFound=true;

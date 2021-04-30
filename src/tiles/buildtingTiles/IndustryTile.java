@@ -1,18 +1,12 @@
-package tiles.bigPictureTile;
+package tiles.buildtingTiles;
 
 import polis.MouseMovementTracker;
 import simulation.GeneralStatistics;
-import tiles.bigPictureTile.BigPictureTile;
 
-public class IndustryTile extends BigPictureTile {
+public class IndustryTile extends BuildingTile {
 
     public IndustryTile() {
         super("industry");
-    }
-
-    @Override
-    public boolean isIndustry(){
-        return true;
     }
 
     @Override
