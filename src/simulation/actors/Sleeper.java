@@ -22,8 +22,8 @@ public class Sleeper extends Actor {
     public boolean isValid() {
         boolean isAgeValid = getAge() > 0;
         if (!isAgeValid && getHome().isExisting()){
-            if (getHome().getActors().indexOf(this) > getHome().getCapacity()){
-                getHome().getActors().remove(this);
+            if (getHome().getActors().indexOf(this) + 1 > getHome().getCapacity()){
+                getHome().removeActor(this);
             } else {
                 setNewActor(new JobSeeker(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), getDirection()));
             }
