@@ -1,4 +1,4 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
@@ -8,7 +8,7 @@ import tiles.bigPictureTile.CommerceTile;
 import java.util.List;
 import java.util.Properties;
 
-public class JobSeeker extends Actor{
+public class JobSeeker extends Actor {
 
     private boolean workFound;
 

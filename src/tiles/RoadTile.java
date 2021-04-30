@@ -10,13 +10,11 @@ import java.util.*;
 
 public class RoadTile extends Tile implements RemovableTile{
 
-    //velden zijn protected omdat NonRemovableRoadTile overerft van RoadTile exact hetzelfde doet als RoadTile, met als
-    //enige verschil dat het niet verwijderbaar is (methode removeThis doet niets)
-    protected int r;
-    protected int k;
-    protected int imageNumber;
-    protected List<RoadTile> neighbors;
-    protected MouseMovementTracker mouseMovementTracker;
+    private final int r;
+    private final int k;
+    private int imageNumber;
+    private List<RoadTile> neighbors;
+    private final MouseMovementTracker mouseMovementTracker;
 
     public RoadTile(int r, int k, MouseMovementTracker mouseMovementTracker) {
         super(1);
@@ -88,9 +86,5 @@ public class RoadTile extends Tile implements RemovableTile{
             neighbor.invalidated();
         }
         mouseMovementTracker.getCityArea().getChildren().remove(this);
-    }
-
-    @Override
-    public void upgrade() {
     }
 }

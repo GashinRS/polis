@@ -1,12 +1,7 @@
 package polis;
 
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
-import javafx.util.Pair;
 import tiles.Area;
 import tiles.NonRemovableRoadTile;
 
@@ -14,12 +9,6 @@ import java.util.Random;
 
 
 public class CityArea extends Pane {
-
-    private static final Random RG = new Random();
-
-    private final int[][] directions = new int[][] {
-        { 0,1,3,2 }, {0,3,1,2}, {1,3,0,2}, {1,0,3,2}, {3,0,1,2}, {3,1,0,2}
-    };
 
     //private MouseMovementTracker mouseMovementTracker;
 
@@ -42,7 +31,6 @@ public class CityArea extends Pane {
         }
 
     }
-
 
     public void setTranslateXY(Node node, int r, int k) {
         node.setTranslateX(64 * (32 - r + k));

@@ -1,6 +1,7 @@
 package simulation;
 
 import polis.MouseMovementTracker;
+import simulation.actors.Immigrant;
 
 public class Region {
 

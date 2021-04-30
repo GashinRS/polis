@@ -11,6 +11,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import simulation.GeneralStatistics;
+import simulation.InfoPanel;
 import simulation.SimulationEngine;
 import tiles.*;
 import tiles.bigPictureTile.*;
@@ -43,8 +45,13 @@ public class MouseMovementTracker extends Pane implements Observable {
     );
     private Properties engineProperties;
     private final Properties levelsProperties = new Properties();
+    private final InfoPanel infoPanel;
+    private final GeneralStatistics generalStatistics;
 
-    public MouseMovementTracker() {
+
+    public MouseMovementTracker(InfoPanel infoPanel, GeneralStatistics generalStatistics) {
+        this.infoPanel=infoPanel;
+        this.generalStatistics=generalStatistics;
         setPrefSize(64 * 2 * 32, 64 * 32);
         setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         setSelectionMode();
@@ -58,6 +65,11 @@ public class MouseMovementTracker extends Pane implements Observable {
         } catch (IOException ie){
             System.err.println("levels properties bestand kon niet gevonden of gelezen worden");
         }
+        bigPictureTileHandler = e -> {
+            if (bigSelectionTile.isValid()) {
+                bigPictureTileFactories.get(bigPictureTileType).createBigPictureTile().initialize(this, bigSelectionTile.getR(), bigSelectionTile.getK(), generalStatistics);
+            }
+        };
     }
 
     public void setCityArea(CityArea cityArea){
@@ -72,19 +84,12 @@ public class MouseMovementTracker extends Pane implements Observable {
     /**
      * Stelt de modus in voor commerce, industry en residence
      */
+    EventHandler<MouseEvent> bigPictureTileHandler;
     public void setBigPictureTileEventHandler(String bigPictureTileType) {
         this.bigPictureTileType = bigPictureTileType;
         switchMode(bigSelectionTile, bigPictureTileHandler);
     }
 
-    /**
-     * new hier wegwerken
-     */
-    EventHandler<MouseEvent> bigPictureTileHandler = e -> {
-        if (bigSelectionTile.isValid()) {
-            bigPictureTileFactories.get(bigPictureTileType).createBigPictureTile().initialize(this, bigSelectionTile.getR(), bigSelectionTile.getK());
-        }
-    };
 
     public void setBulldozerMode() {
         selectionTile.setStroke(Color.RED);
@@ -108,9 +113,11 @@ public class MouseMovementTracker extends Pane implements Observable {
     public void setSelectionMode() {
         selectionTile.setStroke(Color.WHITE);
         switchMode(selectionTile, e -> {
-            RemovableTile tile = buildingTiles.get(new Pair<>(getR(e), getK(e)));
+            BigPictureTile tile = buildingTiles.get(new Pair<>(getR(e), getK(e)));
             if (tile != null) {
-                tile.upgrade();
+                infoPanel.setModel(tile);
+            } else {
+                infoPanel.setModel(generalStatistics);
             }
         });
     }

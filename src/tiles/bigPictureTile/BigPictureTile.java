@@ -1,10 +1,15 @@
 package tiles.bigPictureTile;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
-import simulation.Actor;
+import simulation.GeneralStatistics;
+import simulation.InfoPanel;
+import simulation.InfoPanelModel;
+import simulation.actors.Actor;
 import tiles.RemovableTile;
 import tiles.Tile;
 
@@ -18,12 +23,10 @@ import java.util.Map;
  * TODO: refractoren naar BuildingTile
  */
 
-public abstract class BigPictureTile extends Tile implements RemovableTile {
+public abstract class BigPictureTile extends Tile implements RemovableTile, Observable, InfoPanelModel {
 
     private double capacity;
     private double minimalCapcity;
-    private boolean activated;
-    private int imageNumber;
     private MouseMovementTracker mouseMovementTracker;
     private ImageView imageView;
     private List<Image> images;
@@ -47,12 +50,14 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
     private double upgradeThreshold;
     private double downgradeThreshold;
     private int level;
+    private boolean existing;
+    private GeneralStatistics generalStatistics;
 
     public BigPictureTile(String type) {
         super(2);
         this.type=type;
-        imageNumber = 0;
         level=0;
+        existing=true;
     }
 
     @Override
@@ -64,21 +69,21 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         //onduidelijke bug
         //imageView.setVisible(false);
         mouseMovementTracker.getCityArea().getChildren().remove(imageView);
+        existing=false;
+        changeGeneralStatistics(actors.size(), 0, capacity, 0);
     }
 
-    /**
-     * TODO modulo operator mag volgens mij weg en het zou nog steeds moeten werken
-     * TODO ook nog de downgrade wat cleaner maken
-     */
+    public boolean isExisting(){
+        return existing;
+    }
 
     public void upgrade() {
         imageView.setImage(images.get(level));
         double width = images.get(level).getWidth();
         double height = images.get(level).getHeight();
-        imageView.setImage(images.get(level));
+        //imageView.setImage(images.get(level));
         imageView.setX(-0.5 * width);
         imageView.setY(0.5 * width - height);
-        activated = true;
     }
 
     public void downgrade(){
@@ -103,9 +108,15 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         return false;
     }
 
+    public GeneralStatistics getGeneralStatistics(){
+        return generalStatistics;
+    }
 
-    public void initialize(MouseMovementTracker mouseMovementTracker, int r, int k){
+    public abstract void changeGeneralStatistics(int oldValue, int newValue, double oldValue2, double newValue2);
+
+    public void initialize(MouseMovementTracker mouseMovementTracker, int r, int k, GeneralStatistics generalStatistics){
         this.mouseMovementTracker=mouseMovementTracker;
+        this.generalStatistics=generalStatistics;
         try (InputStream in0 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-0.png");
              InputStream in1 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-1.png");
              InputStream in2 = this.getClass().getResourceAsStream("/polis/tiles/" + type + "-2.png");
@@ -116,7 +127,6 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
             imageView.setMouseTransparent(true);
 
             upgrade();
-            activated=false;
             mouseMovementTracker.getCityArea().getChildren().add(imageView);
             imageView.setTranslateX(64 * (32 - r + k));
             imageView.setTranslateY(64 * (r + k) / 2);
@@ -142,7 +152,9 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
     }
 
     public void changeCapacity(double factor){
+        double oldCapacity = capacity;
         capacity = Math.max(minimalCapcity, capacity*factor);
+        changeGeneralStatistics(actors.size(), actors.size(), oldCapacity, capacity);
         if (capacity >= upgradeThreshold){
             upgradeThreshold = upgradeThresholds[level];
             downgradeThreshold = downgradeThresholds[level];
@@ -165,14 +177,16 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
 
     public void addActor(Actor actor){
         actors.add(actor);
+        changeGeneralStatistics(actors.size()-1, actors.size(), capacity, capacity);
     }
 
     public void removeActor(Actor actor){
         actors.remove(actor);
+        changeGeneralStatistics(actors.size(), actors.size()-1, capacity, capacity);
     }
 
     public boolean isAtMaxCapacity(){
-        return actors.size() >= capacity;
+        return actors.size() >= Math.floor(capacity);
     }
 
     public List<Actor> getActors(){
@@ -183,12 +197,44 @@ public abstract class BigPictureTile extends Tile implements RemovableTile {
         return mouseMovementTracker;
     }
 
+    @Override
+    public String getType(){
+        return type;
+    }
+
     public boolean isActivated(){
-        return activated;
+        return level != 0;
     }
 
     //wordt enkel gebruikt in CommerceTile
     public boolean canAcceptCustomer(){
         return false;
+    }
+
+    private List<InvalidationListener> listeners = new ArrayList<>();
+
+    public void fireInvalidationEvent(){
+        for (InvalidationListener listener:listeners){
+            listener.invalidated(this);
+        }
+    }
+
+    /**
+     * Dit wordt gebruikt door het infopaneel om de statistieken op te halen
+     */
+    @Override
+    public List<Number> getStats(){
+        return List.of(actors.size(), capacity);
+    }
+
+    @Override
+    public void addListener(InvalidationListener invalidationListener) {
+        listeners.add(invalidationListener);
+        fireInvalidationEvent();
+    }
+
+    @Override
+    public void removeListener(InvalidationListener invalidationListener) {
+        listeners.remove(invalidationListener);
     }
 }

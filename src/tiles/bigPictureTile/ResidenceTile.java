@@ -1,6 +1,8 @@
 package tiles.bigPictureTile;
 
-import simulation.Actor;
+
+import polis.MouseMovementTracker;
+import simulation.GeneralStatistics;
 
 public class ResidenceTile extends BigPictureTile {
 
@@ -14,13 +16,14 @@ public class ResidenceTile extends BigPictureTile {
     }
 
     @Override
-    public void changeCapacity(double factor) {
-        super.changeCapacity(factor);
-        int capacity = (int) getCapacity();
-        if (getActors().size() > getCapacity()){
-            for (int i = capacity; i < getActors().size(); i++){
-                getActors().remove(i);
-            }
-        }
+    public void initialize(MouseMovementTracker mouseMovementTracker, int r, int k, GeneralStatistics generalStatistics) {
+        super.initialize(mouseMovementTracker, r, k, generalStatistics);
+        getGeneralStatistics().increaseMaxInhabitants(getCapacity());
     }
+
+    @Override
+    public void changeGeneralStatistics(int oldValue, int newValue, double oldValue2, double newValue2) {
+        getGeneralStatistics().setResidenceStats(oldValue, newValue, oldValue2, newValue2);
+    }
+
 }

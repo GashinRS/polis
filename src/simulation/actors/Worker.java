@@ -1,4 +1,4 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
@@ -6,7 +6,7 @@ import tiles.bigPictureTile.BigPictureTile;
 
 import java.util.Properties;
 
-public class Worker extends Actor{
+public class Worker extends Actor {
 
     private final BigPictureTile workplace;
 
@@ -20,7 +20,7 @@ public class Worker extends Actor{
     @Override
     public void act() {
         setAge(getAge()-1);
-        if (getAge() % Integer.parseInt(getEngineProperties().getProperty("steps.per.goods")) == 0){
+        if (getAge() % Integer.parseInt(getEngineProperties().getProperty("steps.per.goods")) == 0 && workplace.isExisting()){
             getNewActor().add(new Goods(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), workplace, getDirection()));
         }
     }

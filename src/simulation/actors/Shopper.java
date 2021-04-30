@@ -1,4 +1,4 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
@@ -36,7 +36,7 @@ public class Shopper extends Actor {
             Customer customer = new Customer(getMouseMovementTracker(), getR(), getK(), getEngineProperties(), buildingTile, getDirection());
             setNewActor(customer);
             shoppingPlaceFound = true;
-            buildingTile.addActor(this);
+            buildingTile.addActor(customer);
             if (buildingTile.isAtMaxCapacity()){
                 buildingTile.changeCapacity(Double.parseDouble(getEngineProperties().getProperty("factor.good.trade")));
             }

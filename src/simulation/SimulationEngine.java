@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.util.Duration;
 import polis.MouseMovementTracker;
+import simulation.actors.Actor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +39,7 @@ public class SimulationEngine {
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(250),
+                new KeyFrame(Duration.millis(5),
                         this::eachTick)
         );
     }
@@ -65,7 +66,7 @@ public class SimulationEngine {
             /**
              * niet vergeten om dit terug toe te voegen als alles werkt
              */
-            //region.makeImmigrant();
+            region.makeImmigrant();
             ticks = RG.nextInt( (int) tempo);
         }
     }

@@ -1,12 +1,14 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
+import simulation.actors.Actor;
+import simulation.actors.Shopper;
 import tiles.bigPictureTile.CommerceTile;
 
 import java.util.Properties;
 
-public class Trader extends Actor{
+public class Trader extends Actor {
 
     private final CommerceTile shop;
 

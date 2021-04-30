@@ -1,9 +1,8 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import polis.MouseMovementTracker;
-import tiles.RemovableTile;
+import simulation.Region;
 import tiles.bigPictureTile.BigPictureTile;
 
 import java.util.List;

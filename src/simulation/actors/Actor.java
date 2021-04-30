@@ -1,7 +1,6 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import polis.MouseMovementTracker;
 import tiles.bigPictureTile.BigPictureTile;

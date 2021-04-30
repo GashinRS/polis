@@ -8,6 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import prog2.util.Viewport;
+import simulation.GeneralStatistics;
+import simulation.InfoPanel;
 import simulation.SimulationEngine;
 
 import java.util.Map;
@@ -26,20 +28,24 @@ public class CityContainer extends StackPane {
         this.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setPrefSize(1500,1000);
 
-
-        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker();
+        GeneralStatistics generalStatistics = new GeneralStatistics();
+        InfoPanel infoPanel = new InfoPanel(generalStatistics);
+        MouseMovementTracker mouseMovementTracker = new MouseMovementTracker(infoPanel, generalStatistics);
         CityArea cityArea = new CityArea(mouseMovementTracker);
         SimulationEngine simulationEngine = new SimulationEngine(mouseMovementTracker);
 
         CityUI cityUI = new CityUI(mouseMovementTracker);
         PlayButton playButton = new PlayButton("play.png", "pause.png", 75, 50, simulationEngine);
         Insets insets = new Insets(5.0, 5.0, 5.0, 5.0);
+
+        setMargin(infoPanel, insets);
+        setAlignment(infoPanel, Pos.BOTTOM_RIGHT);
         setMargin(cityUI, insets);
         setAlignment(cityUI, Pos.TOP_LEFT);
         setMargin(playButton, insets);
         setAlignment(playButton, Pos.BOTTOM_LEFT);
 
-        this.getChildren().addAll(new Viewport(cityArea, 0.5), cityUI, playButton);
+        this.getChildren().addAll(new Viewport(cityArea, 0.5), cityUI, playButton, infoPanel);
 
         Map<KeyCode, MyButton> buttonKeyMappings = Map.of(
                 KeyCode.R, cityUI.getResidenceButton(),

@@ -1,8 +1,8 @@
-package simulation;
+package simulation.actors;
 
 import javafx.scene.paint.Color;
 import polis.MouseMovementTracker;
-import simulation.Actor;
+import simulation.actors.Actor;
 import tiles.bigPictureTile.BigPictureTile;
 import tiles.bigPictureTile.CommerceTile;
 
