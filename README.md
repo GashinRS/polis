@@ -1,6 +1,6 @@
 # Polis
 
-A simple city simulator game written as a university project @Ghent-University.
+A simple city simulator game written in JavaFX as a university project @Ghent-University.
 
 ![image](https://user-images.githubusercontent.com/107751576/174446032-dc47621e-32d9-4506-a524-7942d66c5ad4.png)
 
